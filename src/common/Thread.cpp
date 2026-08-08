@@ -122,13 +122,19 @@ void Thread::resetFunction( void * (* functionToSet) (void *) )
 
 bool Thread::setAffinity( int cpu )
 {
-#ifndef _MSC_VER
+#if defined(__linux__)
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
     CPU_SET(cpu, & cpuset);
     return ( pthread_attr_setaffinity_np(&attr,sizeof(cpuset),&cpuset) );
-#endif
+#else
+    // pthread_attr_setaffinity_np is a glibc/Linux extension; there is no
+    // pthread-attribute-level equivalent on Darwin (or MSVC). No caller
+    // checks this return value -- see Runtime.cpp -- so a silent no-op is
+    // safe here; OS-level pinning is out of scope for this platform.
+    (void)cpu;
     return false;
+#endif
 }
 
 Thread::~Thread(void)
