@@ -38,7 +38,12 @@ set(runtime_inc
     ${CMAKE_SOURCE_DIR}/include/runtime/CodeletFinal.h)
 
 add_library(darts STATIC ${runtime_lib_src} ${runtime_inc})
-target_link_libraries(darts common amm codelet scheduler threadlocal rt)
+target_link_libraries(darts common amm codelet scheduler threadlocal)
+if ( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+    # librt (clock_gettime et al. on older glibc) has no equivalent on
+    # Darwin, where these symbols already live in libSystem.
+    target_link_libraries(darts rt)
+endif ()
 
 if ( TBB_FOUND )
     target_link_libraries( darts ${TBB_LIBRARIES} )
