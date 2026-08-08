@@ -38,18 +38,27 @@ darts :: hwloc :: AbstractMachine :: discoverTopologyWithLLC(void)
 
     hwloc_obj_t obj;
     for (obj = o->first_child;
-            obj && obj->type != HWLOC_OBJ_CACHE;
+            obj && !hwloc_obj_type_is_cache(obj->type);
             obj = obj->first_child)
         ;
 
     _nbClusters = nbSockets;
     if (obj) {
         int n = hwloc_get_nbobjs_inside_cpuset_by_type(_topology,obj->cpuset,HWLOC_OBJ_PU);
-        _nbClusters = _nbTotalUnits / n; // XXX assumes homogeneous distribution of PUs
+        if (n > 0) {
+            _nbClusters = _nbTotalUnits / n; // XXX assumes homogeneous distribution of PUs
+        }
     }
     _clusterMap = new Cluster[_nbClusters];
 
-    // TODO Refactor this code and the next function's code into a single one 
+    // No cache object found (e.g. Darwin's hwloc backend reports none): fall back to
+    // per-socket clustering, same as discoverTopology(), so _clusterMap is never left
+    // default-constructed and maxUnit in Affinity.cpp can never be 0.
+    if (!obj) {
+        obj = o;
+    }
+
+    // TODO Refactor this code and the next function's code into a single one
     for (o = obj; o; o = o->next_cousin)  {
         int           nUnits = hwloc_get_nbobjs_inside_cpuset_by_type(_topology,o->cpuset,HWLOC_OBJ_PU);
         Unit *units  = new Unit[nUnits];

@@ -29,7 +29,7 @@
 #                                                                              #
 ################################################################################
 
-cmake_minimum_required( VERSION 2.6 )
+cmake_minimum_required( VERSION 3.10 )
 
 ENABLE_TESTING()
 
@@ -119,11 +119,11 @@ set (CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 ## Compiler flags
 if( ${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" )
-    set( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-g -std=c++11 -Wall -Wextra -Werror -Wno-pmf-conversions" )
-    set( CMAKE_C_FLAGS ${CMAKE_C_FLAGS}     "-g -std=c11 -Wall -Wextra -Werror" )
+    set( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-g -std=c++11 -Wall -Wextra -Wno-pmf-conversions" )
+    set( CMAKE_C_FLAGS ${CMAKE_C_FLAGS}     "-g -std=c11 -Wall -Wextra" )
 elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" )
-    set( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-g -std=c++11 -Wall -Wextra -Werror " )
-    set( CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-g -std=c11 -Wall -Wextra -Werror " )
+    set( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-g -std=c++11 -Wall -Wextra " )
+    set( CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-g -std=c11 -Wall -Wextra " )
 elseif( ${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC" )
     set( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "/W3 /wd4995" )
 else()
