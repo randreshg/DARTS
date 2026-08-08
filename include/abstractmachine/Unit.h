@@ -57,10 +57,11 @@ namespace hwloc {
         /** \brief @return the core ID */
         uint64_t getId()       const { return _id;       }
 
+#ifdef __linux__
         /**
          * \brief pins the calling thread to this HW unit.
          */
-        void pin() 
+        void pin()
         {
             cpu_set_t mask;
             CPU_ZERO(&mask);
@@ -68,6 +69,7 @@ namespace hwloc {
             if ( 0 != sched_setaffinity(0, sizeof(mask), &mask) )
                 perror("sched_setaffinity");
         }
+#endif
     };
 }
 }
