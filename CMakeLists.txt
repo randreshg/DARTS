@@ -162,4 +162,4 @@ endif(COUNT)
 add_subdirectory( include )
 add_subdirectory( src )
 add_subdirectory( apps )
-
+add_subdirectory( examples )
