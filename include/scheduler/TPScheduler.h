@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include "dartsPool.h"
 #include "Atomics.h"
+#include "StealScope.h"
 
 #ifdef TRACE
 #include "getClock.h"
@@ -62,18 +63,64 @@ namespace darts
          * destination and steal() never draws from here. */
         dartsPool<tpClosure*> placed_;
         dartsPool<Codelet*> codelets_;
+        /* Node-group layer (NUMA_PAIRED only). NULL / 0 / STEAL_LEGACY
+         * unless the Runtime called setNodeGroup(), so a runtime without a
+         * node group never touches any of it except the one nodeCodelets_
+         * test after an empty codelets_ pop. shared_ holds this SU's
+         * setPlacedShared() codelets; nodeCodelets_ / nodeTPs_ are the pools
+         * of this SU's NUMA node, shared with the sibling SU. */
+        dartsPool<Codelet*> shared_;
+        TPScheduler * sibling_;
+        dartsPool<Codelet*> * nodeCodelets_;
+        dartsPool<tpClosure*> * nodeTPs_;
+        unsigned node_;
+        StealScope stealScope_;
+        uint64_t rng_;
+        /* Codelets this SU took from its node pool / its sibling's shared
+         * pool (only counted with a node group). */
+        volatile uint64_t nodePulls_;
+        volatile uint64_t siblingPulls_;
 
     public:
         
         TPScheduler(void):
         numberOfPeers(0),
         peers_(NULL),
+        sibling_(NULL),
+        nodeCodelets_(NULL),
+        nodeTPs_(NULL),
+        node_(0),
+        stealScope_(STEAL_LEGACY),
+        rng_(0),
+        nodePulls_(0),
+        siblingPulls_(0),
         placedCount_(0),
         clusterIndex_(0),
         stickyPlacement_(false)
         {
             
         }
+
+        /* Join this SU to its node group. Called once by the Runtime of a
+         * NUMA_PAIRED layout, before any worker starts. Seeds the xorshift64
+         * state of the SIBLING_THEN_ANY victim draw from the SU index. */
+        void setNodeGroup(unsigned node, TPScheduler * sibling,
+                          dartsPool<Codelet*> * nodeCodelets,
+                          dartsPool<tpClosure*> * nodeTPs, StealScope scope)
+        {
+            node_         = node;
+            sibling_      = sibling;
+            nodeCodelets_ = nodeCodelets;
+            nodeTPs_      = nodeTPs;
+            stealScope_   = scope;
+            rng_          = 0x9E3779B97F4A7C15ULL * ((uint64_t)clusterIndex_ + 1);
+        }
+        bool       hasNodeGroup(void) const  { return nodeCodelets_ != NULL; }
+        unsigned   getNode(void) const       { return node_; }
+        StealScope getStealScope(void) const { return stealScope_; }
+        TPScheduler * getSibling(void) const { return sibling_; }
+        uint64_t   nodePulls(void)           { return Atomics::load(nodePulls_); }
+        uint64_t   siblingPulls(void)        { return Atomics::load(siblingPulls_); }
 
         /* This scheduler's index in the Runtime's scheduler table, i.e. the
          * index place<> and pushCodeletTo() resolve a target to. getID() is
@@ -144,6 +191,8 @@ namespace darts
         tpClosure *
         steal(void)
         {
+            if(stealScope_ == STEAL_LEGACY)
+            {
             if(numberOfPeers)
             {
                 uint64_t random = rand() % numberOfPeers;
@@ -156,7 +205,48 @@ namespace darts
                 }
             }
             return NULL;
+            }
+            if(stealScope_ == STEAL_NONE)
+                return NULL;
+            if(sibling_)
+            {
+                tpClosure * c = sibling_->popTPStealableHead();
+                if(c)
+                {
+                    if(c->sticky)
+                        Atomics::fetchAdd(placedSteals_, (uint64_t)1);
+                    return c;
+                }
+            }
+            if(stealScope_ == STEAL_SIBLING_THEN_ANY)
+                return stealAnyScoped();
+            return NULL;
         }  
+
+        /* SIBLING_THEN_ANY second stage: one xorshift64 victim drawn
+         * uniformly from the SUs other than this one and its sibling (no
+         * draw is wasted on itself). Stealable closures only. */
+        tpClosure *
+        stealAnyScoped(void)
+        {
+            const size_t self = clusterIndex_;
+            const size_t sib  = sibling_ ? sibling_->getClusterIndex() : self;
+            const size_t lo   = (self < sib) ? self : sib;
+            const size_t hi   = (self < sib) ? sib : self;
+            const size_t excluded = (lo == hi) ? 1 : 2;
+            if(numberOfPeers <= excluded)
+                return NULL;
+            rng_ ^= rng_ << 13;
+            rng_ ^= rng_ >> 7;
+            rng_ ^= rng_ << 17;
+            size_t victim = (size_t)(rng_ % (uint64_t)(numberOfPeers - excluded));
+            if(victim >= lo) ++victim;
+            if(excluded == 2 && victim >= hi) ++victim;
+            tpClosure * stolen = peers_[victim]->popTPStealable();
+            if(stolen && stolen->sticky)
+                Atomics::fetchAdd(placedSteals_, (uint64_t)1);
+            return stolen;
+        }
 
         /* Placed closures ever returned by steal(); stays 0. */
         static uint64_t placedSteals(void) { return Atomics::load(placedSteals_); }
@@ -205,6 +295,11 @@ namespace darts
                     return placed;
                 }
             }
+            /* Node-placed closures (placeNode<>), shared with the sibling
+             * SU. NULL without a node group. */
+            if(nodeTPs_)
+                if(tpClosure * c = nodeTPs_->pop())
+                    return c;
             return ready_.pop();
         }
 
@@ -214,6 +309,14 @@ namespace darts
         {
             return ready_.pop();
         }
+
+        /* Sibling steal: the oldest stealable closure (the owner pops the
+         * newest). */
+        tpClosure *
+        popTPStealableHead(void)
+        {
+            return ready_.popHead();
+        }
         
         virtual bool 
         pushCodelet(Codelet * CodeletToPush)
@@ -221,10 +324,30 @@ namespace darts
             return codelets_.push(CodeletToPush);
         }
         
+        /* Own queue first: without a node group that is the whole function
+         * plus one predictable branch. With one: this SU's shared pool, then
+         * the node pool, then (SIBLING scopes) the sibling SU's shared pool.
+         * Never another SU's own queue. */
         virtual Codelet * 
         popCodelet(void)
         {
-            return codelets_.pop();
+            Codelet * c = codelets_.pop();
+            if(c || !nodeCodelets_)
+                return c;
+            if((c = shared_.pop()))
+                return c;
+            if((c = nodeCodelets_->pop()))
+            {
+                Atomics::fetchAdd(nodePulls_, (uint64_t)1);
+                return c;
+            }
+            if((stealScope_ == STEAL_SIBLING || stealScope_ == STEAL_SIBLING_THEN_ANY)
+               && sibling_ && (c = sibling_->shared_.popHead()))
+            {
+                Atomics::fetchAdd(siblingPulls_, (uint64_t)1);
+                return c;
+            }
+            return NULL;
         }
 
         /* Enqueue a ready codelet on TP scheduler `cluster`, an index into
@@ -235,6 +358,21 @@ namespace darts
          * push fails; the caller keeps ownership of the codelet. */
         static bool pushCodeletTo(uint64_t cluster, Codelet * cd);
         static uint64_t directedRefused(void) { return Atomics::load(directedRefused_); }
+
+        /* Node-group pushes (NUMA_PAIRED). Each is bounds checked, refused
+         * from a thread that belongs to no DARTS scheduler, and refused when
+         * the target has no node group (any other runtime); every refusal
+         * returns false, leaves ownership with the caller and is counted in
+         * nodeGroupRefused().
+         *   pushCodeletToNode  the codelet pool of NUMA node `node`
+         *   pushCodeletShared  the shared pool of SU `su`
+         *   pushTPNode         the closure pool of NUMA node `node` (not
+         *                      sticky: either SU of the node expands it, and
+         *                      steal() never draws from it) */
+        static bool pushCodeletToNode(uint64_t node, Codelet * cd);
+        static bool pushCodeletShared(uint64_t su, Codelet * cd);
+        static bool pushTPNode(uint64_t node, tpClosure * closure);
+        static uint64_t nodeGroupRefused(void) { return Atomics::load(nodeGroupRefused_); }
         
         static TPScheduler * create(unsigned int type);
 
@@ -244,6 +382,7 @@ namespace darts
         bool              stickyPlacement_;
         static volatile uint64_t placedSteals_;
         static volatile uint64_t directedRefused_;
+        static volatile uint64_t nodeGroupRefused_;
     };
 }
 

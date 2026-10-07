@@ -39,8 +39,19 @@
 #endif
 
 
+#if defined(__linux__)
+	#include <sched.h>
+#endif
+
 namespace darts
 {
+    /* CPU set used by the calling-thread pinning helpers below: cpu_set_t on
+     * Linux, a placeholder elsewhere. */
+#if defined(__linux__)
+    typedef cpu_set_t dartsCpuMask;
+#else
+    typedef int dartsCpuMask;
+#endif
 
     /*
     Class: Thread
@@ -123,6 +134,21 @@ namespace darts
         void resetFunction( void * (* functionToSet) (void *) );
         
         bool setAffinity( int cpu );
+
+        /*
+        Function: pinCallingThread
+        Pins the *calling* thread to <cpu>, first saving its current mask in
+        <saved> when that is not NULL. Returns true on success (unlike
+        setAffinity, which returns pthread_attr_setaffinity_np's error code).
+        Always false off Linux.
+        */
+        static bool pinCallingThread( int cpu, dartsCpuMask * saved );
+
+        /*
+        Function: restoreCallingThread
+        Restores a mask saved by <pinCallingThread>. Returns true on success.
+        */
+        static bool restoreCallingThread( const dartsCpuMask * saved );
         
         ~Thread(void);
 

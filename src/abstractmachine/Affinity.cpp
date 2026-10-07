@@ -134,6 +134,71 @@ ThreadAffinity::generateMask(void)
             }
 
             break;
+
+        case NUMA_PAIRED:
+        {
+            /* Every precondition is a refusal: nothing is written to the
+             * masks or the node table until all of them hold. */
+            const unsigned int nNodes = (unsigned int)AbsMac.getNbNumaNodes();
+            if(!llc)
+            {
+                std::cout << "NUMA_PAIRED needs LLC clusters (LLC = true)" << std::endl;
+                return false;
+            }
+            if(RequestedUnits > maxUnit)
+            {
+                std::cout << "NUMA_PAIRED needs mcPerTp+1 (" << RequestedUnits
+                          << ") <= units per cluster (" << maxUnit << ")" << std::endl;
+                return false;
+            }
+            if(numTPS != 2 * nNodes || maxCluster != 2 * nNodes)
+            {
+                std::cout << "NUMA_PAIRED needs numTPS (" << numTPS << ") == clusters ("
+                          << maxCluster << ") == 2 x NUMA nodes (" << nNodes << ")" << std::endl;
+                return false;
+            }
+            for(unsigned int k = 0; k < nNodes; k++)
+            {
+                if(AbsMac.numaNodeOfCluster(2 * k) != k || AbsMac.numaNodeOfCluster(2 * k + 1) != k)
+                {
+                    std::cout << "NUMA_PAIRED needs clusters " << 2 * k << " and " << 2 * k + 1
+                              << " on NUMA node " << k << " (got "
+                              << AbsMac.numaNodeOfCluster(2 * k) << ", "
+                              << AbsMac.numaNodeOfCluster(2 * k + 1) << ")" << std::endl;
+                    return false;
+                }
+            }
+            for(unsigned int k = 0; k < maxCluster; k++)
+            {
+                if(clusterMap[k].getNbUnits() < RequestedUnits)
+                {
+                    std::cout << "NUMA_PAIRED needs mcPerTp+1 (" << RequestedUnits
+                              << ") units in every cluster (cluster " << k << " has "
+                              << clusterMap[k].getNbUnits() << ")" << std::endl;
+                    return false;
+                }
+            }
+
+            /* TP scheduler i on unit 0 of cluster i, its micro schedulers on
+             * units 1..mcPerTp of the same cluster. */
+            for (unsigned int i = 0; i < numTPS; i++)
+            {
+                TPMask.clusterID[i] = i;
+                TPMask.unitID[i]    = 0;
+                for (unsigned int j = 0; j < mcPerTp; j++)
+                {
+                    MCMask.clusterID[i * mcPerTp + j] = i;
+                    MCMask.unitID[i * mcPerTp + j]    = j + 1;
+                }
+            }
+            delete [] tpsNode_;
+            tpsNode_ = new int[numTPS];
+            for(unsigned int i = 0; i < numTPS; i++)
+                tpsNode_[i] = (int)AbsMac.numaNodeOfCluster(i);
+            suPerNode_ = 2;
+
+            break;
+        }
         
         default:
             return false;

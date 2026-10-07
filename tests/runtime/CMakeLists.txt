@@ -11,7 +11,11 @@
 set(DARTS_RUNTIME_TESTS
     rt_directed.cpp
     rt_sticky_place.cpp
-    unit_numa_topology.cpp)
+    unit_numa_topology.cpp
+    rt_numa_paired.cpp
+    rt_node_place.cpp
+    rt_sibling_steal.cpp
+    rt_su_barrier.cpp)
 
 foreach(src ${DARTS_RUNTIME_TESTS})
   get_filename_component(stem ${src} NAME_WE)

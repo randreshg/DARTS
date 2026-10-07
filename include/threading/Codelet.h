@@ -36,6 +36,19 @@ namespace darts
 
     //This is a forward declaration since there is a circular dependence
     class ThreadedProcedure;    
+
+    /* Where a ready codelet is enqueued:
+     *   SCOPE_SU         the default: placed_ names a TP scheduler
+     *                    (setPlacedCluster) or is UNPLACED_CLUSTER (the
+     *                    releasing scheduler)
+     *   SCOPE_SU_SHARED  placed_ names an SU whose shared pool receives it;
+     *                    the SU's sibling may pull it (setPlacedShared)
+     *   SCOPE_NODE       placedNode_ names a NUMA node whose node pool
+     *                    receives it; either SU of the node may fire it
+     *                    (setPlacedNode); placed_ stays UNPLACED_CLUSTER
+     * The last two need a NUMA_PAIRED Runtime; without one the push is
+     * refused exactly like a refused directed push. */
+    enum PlaceScope { SCOPE_SU = 0, SCOPE_SU_SHARED = 1, SCOPE_NODE = 2 };
     /*
 		 * Class: Codelet
 		 * The codelet class is a virutal class. Use this class to instantiate codelets
@@ -70,6 +83,11 @@ namespace darts
 				 * Pointer to TP frame/context
 				*/
         ThreadedProcedure * myTP_;
+
+    private:
+        /* Placement scope and node (see PlaceScope). */
+        uint32_t placedNode_;
+        uint8_t  placeScope_;
 
     public:
         static const uint32_t UNPLACED_CLUSTER = 0xffffffffu;
@@ -142,10 +160,17 @@ namespace darts
          * scheduler that released it. That queue is never drawn by TP
          * stealing, so the codelet fires on the named scheduler. An
          * unplaced codelet (the default) keeps the existing behaviour. */
-        void     setPlacedCluster(uint32_t cluster) { placed_ = cluster; }
-        void     clearPlacedCluster(void) { placed_ = UNPLACED_CLUSTER; }
+        void     setPlacedCluster(uint32_t cluster) { placed_ = cluster; placeScope_ = SCOPE_SU; }
+        void     clearPlacedCluster(void) { placed_ = UNPLACED_CLUSTER; placeScope_ = SCOPE_SU; }
         uint32_t placedCluster(void) const { return placed_; }
         bool     isPlaced(void) const { return placed_ != UNPLACED_CLUSTER; }
+        /* Node scope (NUMA_PAIRED): the node pool of NUMA node `node`.
+         * isPlaced() stays false. */
+        void     setPlacedNode(uint32_t node) { placed_ = UNPLACED_CLUSTER; placedNode_ = node; placeScope_ = SCOPE_NODE; }
+        /* Shared scope (NUMA_PAIRED): the shared pool of SU `su`. */
+        void     setPlacedShared(uint32_t su) { placed_ = su; placeScope_ = SCOPE_SU_SHARED; }
+        PlaceScope placeScope(void) const { return (PlaceScope)placeScope_; }
+        uint32_t placedNode(void) const { return placedNode_; }
 
         /* A placed codelet whose enqueue is refused (index out of range,
          * released from a thread that belongs to no DARTS scheduler, or a

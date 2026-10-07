@@ -112,6 +112,17 @@ namespace darts
         if(toAdd->codeletReady())
         {
             Atomics::fetchAdd(ref_, 1U);
+            if(toAdd->placeScope() != SCOPE_SU)
+            {
+                const bool node = toAdd->placeScope() == SCOPE_NODE;
+                const uint64_t target = node ? toAdd->placedNode() : toAdd->placedCluster();
+                if(node ? TPScheduler::pushCodeletToNode(target, toAdd)
+                        : TPScheduler::pushCodeletShared(target, toAdd))
+                    return;
+                toAdd->notifyDirectedEnqueueFailure(target);
+                releaseDirectedReference(this);
+                return;
+            }
             if(toAdd->isPlaced())
             {
                 if(TPScheduler::pushCodeletTo(toAdd->placedCluster(), toAdd))

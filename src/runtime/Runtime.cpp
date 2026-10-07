@@ -141,6 +141,19 @@ void Runtime::linkTPSched()
     if(affinity_ && affinity_->stickyPlacement())
         for(unsigned int i=0;i<numTPSched_;i++)
             TPSched_[i]->setStickyPlacement(true);
+    if(numNodes_)
+    {
+        const StealScope scope = affinity_ ? affinity_->getStealScope() : STEAL_LEGACY;
+        for(unsigned int i=0;i<numTPSched_;i++)
+        {
+            const unsigned node = tpsNode_[i];
+            TPScheduler * sibling = NULL;
+            for(unsigned int j=0;j<numTPSched_;j++)
+                if(j != i && tpsNode_[j] == node)
+                    sibling = TPSched_[j];
+            TPSched_[i]->setNodeGroup(node, sibling, &nodeCodelets_[node], &nodeTPs_[node], scope);
+        }
+    }
 }
 
 void Runtime::linkMCSched()
@@ -179,7 +192,13 @@ papi_	     (false),
 tpcount_     (numTPSched_),
 mccount_     (numTPSched_ * numMCSched_),
 fullcount_   (numTPSched_ + numTPSched_ * numMCSched_),
-spin_        (true)
+spin_        (true),
+constructionOk_  (true),
+numNodes_        (0),
+tpsNode_         (NULL),
+nodeCodelets_    (NULL),
+nodeTPs_         (NULL),
+callerMaskValid_ (false)
 {    
     if(maxCluster > AbsMac.getNbClusters() && maxCluster!=(unsigned int)-1)
       std::cerr << "maxCluster is greater than the number of available cluster" << std::endl;
@@ -254,7 +273,13 @@ papi_	     (affinity->usePapi()),
 tpcount_     (numTPSched_),
 mccount_     (numTPSched_ * numMCSched_),
 fullcount_   (numTPSched_ + numTPSched_ * numMCSched_),
-spin_        (true)
+spin_        (true),
+constructionOk_  (true),
+numNodes_        (0),
+tpsNode_         (NULL),
+nodeCodelets_    (NULL),
+nodeTPs_         (NULL),
+callerMaskValid_ (false)
 {     
     srand( time( 0 ) );
     
@@ -366,6 +391,10 @@ spin_        (true)
 
     int dartsAffinityPosVecSize = dartsAffinityPosVec.size();
     int nextAffinityPos = 0;
+    /* Only an accepted NUMA_PAIRED mask has a node group; every check below
+     * that is specific to it is behind this flag. */
+    const bool numaPairedMode = affinity->getMode() == NUMA_PAIRED
+                             && affinity->getSuPerNode() == 2;
     for(unsigned int i=0;i<numTPSched_;i++)
     {
         unsigned tid = i * (1 + numMCSched_);
@@ -384,6 +413,20 @@ spin_        (true)
           affinCore = dartsAffinityPosVec[nextAffinityPos];
           nextAffinityPos = ( nextAffinityPos + numMCSched_ + 1) % dartsAffinityPosVecSize;
         }
+        if(numaPairedMode)
+        {
+          /* setAffinity returns pthread_attr_setaffinity_np's error code. */
+          constructionOk_ = !localThreads_[tid].setAffinity(affinCore) && constructionOk_;
+          /* TP scheduler 0 runs on the constructing thread (TPThread0 and
+           * run()), which no pthread attribute ever reaches: pin it here and
+           * restore its mask in the destructor. */
+          if(i == 0)
+          {
+            callerMaskValid_ = Thread::pinCallingThread((int)affinCore, &callerMaskSaved_);
+            constructionOk_  = constructionOk_ && callerMaskValid_;
+          }
+        }
+        else
         localThreads_[tid].setAffinity(affinCore);
         
         if(isVerbose)
@@ -392,6 +435,24 @@ spin_        (true)
         }
     }
     
+    /* NUMA_PAIRED: the node table and one codelet pool and one closure pool
+     * per node. DARTS_AFFINITY moves the workers, so the node table would no
+     * longer describe where they run. */
+    if(numaPairedMode)
+    {
+        if(dartsAffinityPosVecSize > 0)
+        {
+            fprintf(stderr, "DARTS: NUMA_PAIRED ignores DARTS_AFFINITY; constructionOk() is false\n");
+            constructionOk_ = false;
+        }
+        numNodes_ = numTPSched_ / 2;
+        tpsNode_  = new unsigned[numTPSched_];
+        for(unsigned int i=0;i<numTPSched_;i++)
+            tpsNode_[i] = (unsigned)affinity->nodeOfTps(i);
+        nodeCodelets_ = new dartsPool<Codelet*>[numNodes_];
+        nodeTPs_      = new dartsPool<tpClosure*>[numNodes_];
+    }
+
     nextAffinityPos = 0;
     for(unsigned int i=0;i<numTPSched_;i++)
     {
@@ -421,6 +482,9 @@ spin_        (true)
               affinCore = dartsAffinityPosVec[nextAffinityPos];
               nextAffinityPos = ( nextAffinityPos + 1) % dartsAffinityPosVecSize;
             }
+            if(numaPairedMode)
+              constructionOk_ = !localThreads_[tid].setAffinity(affinCore) && constructionOk_;
+            else
             localThreads_[tid].setAffinity(affinCore);
             
             if(isVerbose)
@@ -429,6 +493,17 @@ spin_        (true)
             }
         }
     }
+    if(numaPairedMode)
+    {
+        /* TPThread0 would wait forever for a worker that never started. */
+        for (unsigned int i = 1; i < numThreads_; i++ )
+            if(!localThreads_[i].run())
+            {
+                fprintf(stderr, "DARTS: NUMA_PAIRED worker %u could not be created\n", i);
+                abort();
+            }
+    }
+    else
     for (unsigned int i = 1; i < numThreads_; i++ )
         localThreads_[i].run();
 
@@ -459,6 +534,11 @@ spin_        (true)
 
 Runtime::~Runtime(void)
 {
+    if(callerMaskValid_)
+    {
+        Thread::restoreCallingThread(&callerMaskSaved_);
+        callerMaskValid_ = false;
+    }
     if(!finalSignal.getTerminate())
     {
         finalSignal.setTerminate(true);
@@ -476,4 +556,7 @@ Runtime::~Runtime(void)
     delete [] localThreads_;
     delete [] tpargs_;
     delete [] mcargs_;  
+    delete [] tpsNode_;
+    delete [] nodeCodelets_;
+    delete [] nodeTPs_;
 }

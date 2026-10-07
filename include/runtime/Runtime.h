@@ -76,6 +76,19 @@ namespace darts
         volatile unsigned int mccount_;
         volatile unsigned int fullcount_;
         volatile bool spin_;
+        /* NUMA_PAIRED only (0 / NULL / true on every other runtime):
+         * constructionOk_ is false when a pin failed or DARTS_AFFINITY
+         * overrode the layout; tpsNode_[i] = NUMA node of TP scheduler i;
+         * one node codelet pool and one node closure pool per node; the
+         * constructing thread (TP scheduler 0) is pinned and its previous
+         * mask restored by the destructor. */
+        bool constructionOk_;
+        unsigned numNodes_;
+        unsigned * tpsNode_;
+        dartsPool<Codelet*> * nodeCodelets_;
+        dartsPool<tpClosure*> * nodeTPs_;
+        dartsCpuMask callerMaskSaved_;
+        bool callerMaskValid_;
     public:
         static CodeletFinal finalSignal;
         Runtime(unsigned int maxCluster = -1, unsigned int maxWorker = -1);
@@ -100,6 +113,18 @@ namespace darts
                 usecs += range;
             }
         }
+
+        /* False when a NUMA_PAIRED runtime could not be placed as requested
+         * (a pin failed, or DARTS_AFFINITY overrode the layout); the caller
+         * should not trust placement-dependent results. Always true for the
+         * other layouts. */
+        bool constructionOk(void) const { return constructionOk_; }
+        /* Node-group layer: numNodes() is 0 and numaPaired() false unless
+         * the Runtime was built from an accepted NUMA_PAIRED mask;
+         * nodeOfTPS(i) is ~0u without a node group or out of range. */
+        unsigned numNodes(void) const { return numNodes_; }
+        unsigned nodeOfTPS(unsigned i) const { return (tpsNode_ && i < numTPSched_) ? tpsNode_[i] : ~0u; }
+        bool     numaPaired(void) const { return numNodes_ != 0; }
 
         void linkTPSched(void);
         void linkMCSched(void);       

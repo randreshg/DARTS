@@ -61,7 +61,9 @@ namespace darts
     status_(stat),
     placed_(UNPLACED_CLUSTER),
     sync_(dep,res),
-    myTP_(theTp) 
+    myTP_(theTp),
+    placedNode_(0),
+    placeScope_(SCOPE_SU)
     {
     }
 
@@ -69,7 +71,22 @@ namespace darts
     status_(NIL),
     placed_(UNPLACED_CLUSTER),
     sync_(0U,0U),
-    myTP_(0) { }
+    myTP_(0),
+    placedNode_(0),
+    placeScope_(SCOPE_SU) { }
+
+    /* The node-group scopes. Returns whether the push was accepted and the
+     * target to report on refusal. */
+    static bool pushScoped(Codelet * cd, uint64_t * target)
+    {
+        if(cd->placeScope() == SCOPE_NODE)
+        {
+            *target = cd->placedNode();
+            return TPScheduler::pushCodeletToNode(cd->placedNode(), cd);
+        }
+        *target = cd->placedCluster();
+        return TPScheduler::pushCodeletShared(cd->placedCluster(), cd);
+    }
 
     void
     Codelet::initCodelet(uint32_t dep, uint32_t res, ThreadedProcedure * theTp, uint32_t stat)
@@ -87,6 +104,15 @@ namespace darts
             ThreadedProcedure * tp = myTP_;
             if(tp)
                 tp->incRef();
+            if(placeScope_ != SCOPE_SU)
+            {
+                uint64_t target = 0;
+                if(pushScoped(this, &target))
+                    return;
+                notifyDirectedEnqueueFailure(target);
+                releaseDirectedReference(tp);
+                return;
+            }
             if(placed_ != UNPLACED_CLUSTER)
             {
                 if(TPScheduler::pushCodeletTo(placed_, this))
@@ -173,6 +199,20 @@ namespace darts
     {
         if(aCodelet->codeletReady())
         {
+            if(aCodelet->placeScope() != SCOPE_SU)
+            {
+                /* The reference is taken on the added codelet's own TP,
+                 * which is the one the scheduler releases after its fire. */
+                ThreadedProcedure * own = aCodelet->getTP();
+                if(own)
+                    own->incRef();
+                uint64_t target = 0;
+                if(pushScoped(aCodelet, &target))
+                    return;
+                aCodelet->notifyDirectedEnqueueFailure(target);
+                releaseDirectedReference(own);
+                return;
+            }
             if(aCodelet->isPlaced())
             {
                 ThreadedProcedure * tp = myTP_;

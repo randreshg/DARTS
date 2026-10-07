@@ -131,6 +131,35 @@ bool Thread::setAffinity( int cpu )
     return false;
 }
 
+bool Thread::pinCallingThread( int cpu, dartsCpuMask * saved )
+{
+#if defined(__linux__)
+    if( cpu < 0 )
+        return false;
+    if( saved && sched_getaffinity( 0, sizeof(dartsCpuMask), saved ) != 0 )
+        return false;
+    cpu_set_t set;
+    CPU_ZERO( &set );
+    CPU_SET( cpu, &set );
+    return ( sched_setaffinity( 0, sizeof(set), &set ) == 0 );
+#else
+    (void)cpu; (void)saved;
+    return false;
+#endif
+}
+
+bool Thread::restoreCallingThread( const dartsCpuMask * saved )
+{
+#if defined(__linux__)
+    if( !saved )
+        return false;
+    return ( sched_setaffinity( 0, sizeof(dartsCpuMask), saved ) == 0 );
+#else
+    (void)saved;
+    return false;
+#endif
+}
+
 Thread::~Thread(void)
 {
 #ifndef _MSC_VER

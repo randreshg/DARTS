@@ -38,12 +38,13 @@ set(scheduler_inc
     ${CMAKE_SOURCE_DIR}/include/scheduler/MSchedPolicy.h 
     ${CMAKE_SOURCE_DIR}/include/scheduler/Scheduler.h 
     ${CMAKE_SOURCE_DIR}/include/scheduler/TPSchedPolicy.h 
-    ${CMAKE_SOURCE_DIR}/include/scheduler/TPScheduler.h)
+    ${CMAKE_SOURCE_DIR}/include/scheduler/TPScheduler.h
+    ${CMAKE_SOURCE_DIR}/include/scheduler/StealScope.h)
 
 add_library(scheduler STATIC ${scheduler_sources} ${scheduler_inc})
 
 set_target_properties(scheduler PROPERTIES PUBLIC_HEADER 
-"${CMAKE_SOURCE_DIR}/include/scheduler/MicroScheduler.h;${CMAKE_SOURCE_DIR}/include/scheduler/MSchedPolicy.h;${CMAKE_SOURCE_DIR}/include/scheduler/Scheduler.h;${CMAKE_SOURCE_DIR}/include/scheduler/TPSchedPolicy.h;${CMAKE_SOURCE_DIR}/include/scheduler/TPScheduler.h")
+"${CMAKE_SOURCE_DIR}/include/scheduler/MicroScheduler.h;${CMAKE_SOURCE_DIR}/include/scheduler/MSchedPolicy.h;${CMAKE_SOURCE_DIR}/include/scheduler/Scheduler.h;${CMAKE_SOURCE_DIR}/include/scheduler/TPSchedPolicy.h;${CMAKE_SOURCE_DIR}/include/scheduler/TPScheduler.h;${CMAKE_SOURCE_DIR}/include/scheduler/StealScope.h")
 
 install(TARGETS scheduler     
     EXPORT dartsLibraryDepends

@@ -312,6 +312,63 @@ inline void require_cpus(const darts::ThreadAffinity & affin)
     require_cpu_list(affinity_cpus(affin));
 }
 
+/* ------------------------------------------------------------------ */
+/* NUMA_PAIRED shape: two LLC clusters per NUMA node, clusters 2k and 2k+1
+ * on node k. nsu = clusters, nnode = NUMA nodes, mcPerTp = units of the
+ * smallest cluster - 1 (every unit of an SU busy). False (the caller skips
+ * with EXIT_REFUSE) on any other host. */
+
+struct PairedShape
+{
+    unsigned nsu, nnode, mcPerTp;
+    PairedShape() : nsu(0), nnode(0), mcPerTp(0) {}
+};
+
+inline bool paired_shape(PairedShape & s)
+{
+    darts::hwloc::AbstractMachine am(true);
+    s.nnode = (unsigned)am.getNbNumaNodes();
+    s.nsu   = (unsigned)am.getNbClusters();
+    if(s.nnode < 1 || s.nsu != 2 * s.nnode) return false;
+    uint64_t minUnits = ~(uint64_t)0;
+    for(unsigned c = 0; c < s.nsu; ++c)
+    {
+        if(am.numaNodeOfCluster(c) != c / 2) return false;
+        if(am.getClusterMap()[c].getNbUnits() < minUnits) minUnits = am.getClusterMap()[c].getNbUnits();
+    }
+    if(minUnits < 2) return false;
+    s.mcPerTp = (unsigned)(minUnits - 1);
+    return true;
+}
+
+inline int skip_unless_paired(PairedShape & s, const char * name)
+{
+    if(paired_shape(s)) return 0;
+    std::printf("%s: SKIP -- needs exactly two LLC clusters per NUMA node "
+                "(clusters 2k, 2k+1 on node k) with at least two units each\n", name);
+    return EXIT_REFUSE;
+}
+
+/* Sums of the per-SU pull counters, read from the host thread (which runs
+ * TP scheduler 0 after the Runtime constructor). */
+inline uint64_t total_node_pulls()
+{
+    darts::TPScheduler * me = darts::myThread.threadTPsched;
+    uint64_t n = 0;
+    for(unsigned i = 0; me && i < me->getNumTPSched(); ++i)
+        n += static_cast<darts::TPScheduler *>(me->getRuntimeTPSched(i))->nodePulls();
+    return n;
+}
+
+inline uint64_t total_sibling_pulls()
+{
+    darts::TPScheduler * me = darts::myThread.threadTPsched;
+    uint64_t n = 0;
+    for(unsigned i = 0; me && i < me->getNumTPSched(); ++i)
+        n += static_cast<darts::TPScheduler *>(me->getRuntimeTPSched(i))->siblingPulls();
+    return n;
+}
+
 } // namespace rt_test
 
 #endif
