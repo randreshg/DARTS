@@ -22,6 +22,13 @@ set(DARTS_RUNTIME_TESTS
     rt_resident.cpp
     rt_wake.cpp)
 
+# rt_poll_hint counts real lock acquisitions and idle back-off sleeps: every
+# pthread_mutex_lock and usleep reference in the test and in libdarts goes
+# through its __wrap_ functions (GNU ld / lld --wrap, Linux only).
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(APPEND DARTS_RUNTIME_TESTS rt_poll_hint.cpp)
+endif()
+
 foreach(src ${DARTS_RUNTIME_TESTS})
   get_filename_component(stem ${src} NAME_WE)
   string(REPLACE "_" "-" name "darts-${stem}")
@@ -34,3 +41,7 @@ foreach(src ${DARTS_RUNTIME_TESTS})
     set_tests_properties(${name} PROPERTIES LABELS "runtime" RUN_SERIAL TRUE TIMEOUT 900 SKIP_RETURN_CODE 4)
   endif()
 endforeach()
+
+if(TARGET darts-rt-poll-hint)
+  target_link_libraries(darts-rt-poll-hint "-Wl,--wrap=pthread_mutex_lock" "-Wl,--wrap=usleep")
+endif()

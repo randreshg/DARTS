@@ -154,6 +154,22 @@ void Runtime::linkTPSched()
             TPSched_[i]->setNodeGroup(node, sibling, &nodeCodelets_[node], &nodeTPs_[node], scope);
         }
     }
+    /* Idle-poll hint, only when the ThreadAffinity asks for it. Before any
+     * worker runs, so before any push. */
+    if(affinity_ && affinity_->idlePollHint())
+    {
+        if(numNodes_ && !nodeCodeletsN_)
+        {
+            nodeCodeletsN_ = new PollHintCount[numNodes_];
+            nodeTPsN_      = new PollHintCount[numNodes_];
+        }
+        for(unsigned int i=0;i<numTPSched_;i++)
+        {
+            const unsigned node = numNodes_ ? tpsNode_[i] : 0;
+            TPSched_[i]->setIdlePollHint(numNodes_ ? &nodeCodeletsN_[node] : NULL,
+                                         numNodes_ ? &nodeTPsN_[node] : NULL);
+        }
+    }
 }
 
 void Runtime::linkMCSched()
@@ -210,6 +226,8 @@ numNodes_        (0),
 tpsNode_         (NULL),
 nodeCodelets_    (NULL),
 nodeTPs_         (NULL),
+nodeCodeletsN_   (NULL),
+nodeTPsN_        (NULL),
 callerMaskValid_ (false)
 {    
     if(maxCluster > AbsMac.getNbClusters() && maxCluster!=(unsigned int)-1)
@@ -291,6 +309,8 @@ numNodes_        (0),
 tpsNode_         (NULL),
 nodeCodelets_    (NULL),
 nodeTPs_         (NULL),
+nodeCodeletsN_   (NULL),
+nodeTPsN_        (NULL),
 callerMaskValid_ (false)
 {     
     srand( time( 0 ) );
@@ -571,4 +591,6 @@ Runtime::~Runtime(void)
     delete [] tpsNode_;
     delete [] nodeCodelets_;
     delete [] nodeTPs_;
+    delete [] nodeCodeletsN_;
+    delete [] nodeTPsN_;
 }

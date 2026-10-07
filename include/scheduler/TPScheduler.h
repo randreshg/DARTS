@@ -42,6 +42,16 @@
 
 namespace darts
 {
+    /* One idle-poll hint counter, alone on a 64-byte line so a push to one
+     * pool does not invalidate the line the idle pollers of another pool
+     * read. */
+    struct PollHintCount
+    {
+        volatile uint64_t n;
+        char pad[64 - sizeof(uint64_t)];
+        PollHintCount(void) : n(0) { }
+    };
+
     enum TPSCHED {TPPUSHFULL      = 0, 
                   TPROUNDROBIN    = 1, 
                   TPSTATIC        = 2,
@@ -81,6 +91,82 @@ namespace darts
         volatile uint64_t nodePulls_;
         volatile uint64_t siblingPulls_;
 
+        /* Idle-poll non-empty hint (opt-in, see setIdlePollHint()). While
+         * pollHint_ is false no counter below is read or written and each
+         * pool operation is the plain pool call. When true, every push to
+         * codelets_ / shared_ / ready_ / the node pools raises the pool's
+         * count BEFORE the push and every pop that returned an item lowers
+         * it AFTER, so count >= items at all times and a count of 0 proves
+         * the pool was empty: an idle poll skips the pool's mutex. A stale
+         * non-zero count only costs the old locked pop; a push that races a
+         * poll that read 0 is seen by the next poll of the policy loop. */
+        bool pollHint_;
+        PollHintCount codeletsN_;
+        PollHintCount sharedN_;
+        PollHintCount readyN_;
+        PollHintCount * nodeCodeletsN_;
+        PollHintCount * nodeTPsN_;
+
+        template <class T>
+        static bool hintedPush(dartsPool<T> & pool, PollHintCount & cnt, T item)
+        {
+            Atomics::fetchAdd(cnt.n, (uint64_t)1);
+            if(pool.push(item))
+                return true;
+            Atomics::fetchSub(cnt.n, (uint64_t)1);
+            return false;
+        }
+
+        template <class T>
+        static T hintedPop(dartsPool<T> & pool, PollHintCount & cnt, bool head)
+        {
+            if(!Atomics::load(cnt.n))
+                return 0;
+            T item = head ? pool.popHead() : pool.pop();
+            if(item)
+                Atomics::fetchSub(cnt.n, (uint64_t)1);
+            return item;
+        }
+
+        /* The pool operations of this scheduler; each is exactly the plain
+         * pool call while pollHint_ is false. */
+        bool pushOwnCodelet(Codelet * cd)
+        {
+            return pollHint_ ? hintedPush(codelets_, codeletsN_, cd) : codelets_.push(cd);
+        }
+        Codelet * popOwnCodelet(void)
+        {
+            return pollHint_ ? hintedPop(codelets_, codeletsN_, false) : codelets_.pop();
+        }
+        Codelet * popShared(void)
+        {
+            return pollHint_ ? hintedPop(shared_, sharedN_, false) : shared_.pop();
+        }
+        Codelet * popSharedHead(void)
+        {
+            return pollHint_ ? hintedPop(shared_, sharedN_, true) : shared_.popHead();
+        }
+        Codelet * popNodeCodelet(void)
+        {
+            return pollHint_ ? hintedPop(*nodeCodelets_, *nodeCodeletsN_, false) : nodeCodelets_->pop();
+        }
+        tpClosure * popNodeTP(void)
+        {
+            return pollHint_ ? hintedPop(*nodeTPs_, *nodeTPsN_, false) : nodeTPs_->pop();
+        }
+        bool pushReady(tpClosure * c)
+        {
+            return pollHint_ ? hintedPush(ready_, readyN_, c) : ready_.push(c);
+        }
+        tpClosure * popReady(void)
+        {
+            return pollHint_ ? hintedPop(ready_, readyN_, false) : ready_.pop();
+        }
+        tpClosure * popReadyHead(void)
+        {
+            return pollHint_ ? hintedPop(ready_, readyN_, true) : ready_.popHead();
+        }
+
     public:
         
         TPScheduler(void):
@@ -94,6 +180,9 @@ namespace darts
         rng_(0),
         nodePulls_(0),
         siblingPulls_(0),
+        pollHint_(false),
+        nodeCodeletsN_(NULL),
+        nodeTPsN_(NULL),
         placedCount_(0),
         clusterIndex_(0),
         stickyPlacement_(false)
@@ -121,6 +210,42 @@ namespace darts
         TPScheduler * getSibling(void) const { return sibling_; }
         uint64_t   nodePulls(void)           { return Atomics::load(nodePulls_); }
         uint64_t   siblingPulls(void)        { return Atomics::load(siblingPulls_); }
+
+        /* Turn the idle-poll hint on for this scheduler. Called once by the
+         * Runtime when ThreadAffinity::idlePollHint() is true, after
+         * setNodeGroup() and before any worker starts, i.e. before any push
+         * (a pool that already held uncounted items would be skipped).
+         * nodeCodeletsN / nodeTPsN count this SU's node pools (the sibling
+         * gets the same pointers); NULL without a node group. */
+        void setIdlePollHint(PollHintCount * nodeCodeletsN, PollHintCount * nodeTPsN)
+        {
+            pollHint_      = true;
+            nodeCodeletsN_ = nodeCodeletsN;
+            nodeTPsN_      = nodeTPsN;
+        }
+        bool idlePollHint(void) const { return pollHint_; }
+        /* Sum of this scheduler's own hint counts (codelets_, shared_,
+         * ready_); 0 once its pools drained, and always 0 without the hint. */
+        uint64_t idlePollHintPending(void)
+        {
+            return Atomics::load(codeletsN_.n) + Atomics::load(sharedN_.n) + Atomics::load(readyN_.n);
+        }
+
+        /* Raw node-group pushes behind pushCodeletShared / pushCodeletToNode
+         * / pushTPNode, which add the bounds checks and refusal counting.
+         * Precondition: hasNodeGroup(). Each keeps the hint count. */
+        bool pushShared(Codelet * cd)
+        {
+            return pollHint_ ? hintedPush(shared_, sharedN_, cd) : shared_.push(cd);
+        }
+        bool pushNodeCodelet(Codelet * cd)
+        {
+            return pollHint_ ? hintedPush(*nodeCodelets_, *nodeCodeletsN_, cd) : nodeCodelets_->push(cd);
+        }
+        bool pushNodeTP(tpClosure * c)
+        {
+            return pollHint_ ? hintedPush(*nodeTPs_, *nodeTPsN_, c) : nodeTPs_->push(c);
+        }
 
         /* This scheduler's index in the Runtime's scheduler table, i.e. the
          * index place<> and pushCodeletTo() resolve a target to. getID() is
@@ -256,7 +381,7 @@ namespace darts
         virtual bool 
         pushTP(tpClosure * TPtoPush)
         {
-            return ready_.push(TPtoPush);
+            return pushReady(TPtoPush);
         }
         
         /* Push a closure that must expand on this scheduler. */
@@ -298,16 +423,16 @@ namespace darts
             /* Node-placed closures (placeNode<>), shared with the sibling
              * SU. NULL without a node group. */
             if(nodeTPs_)
-                if(tpClosure * c = nodeTPs_->pop())
+                if(tpClosure * c = popNodeTP())
                     return c;
-            return ready_.pop();
+            return popReady();
         }
 
         /* Steal-path pop: stealable work only. */
         virtual tpClosure *
         popTPStealable(void)
         {
-            return ready_.pop();
+            return popReady();
         }
 
         /* Sibling steal: the oldest stealable closure (the owner pops the
@@ -315,13 +440,13 @@ namespace darts
         tpClosure *
         popTPStealableHead(void)
         {
-            return ready_.popHead();
+            return popReadyHead();
         }
         
         virtual bool 
         pushCodelet(Codelet * CodeletToPush)
         {
-            return codelets_.push(CodeletToPush);
+            return pushOwnCodelet(CodeletToPush);
         }
         
         /* Own queue first: without a node group that is the whole function
@@ -331,18 +456,18 @@ namespace darts
         virtual Codelet * 
         popCodelet(void)
         {
-            Codelet * c = codelets_.pop();
+            Codelet * c = popOwnCodelet();
             if(c || !nodeCodelets_)
                 return c;
-            if((c = shared_.pop()))
+            if((c = popShared()))
                 return c;
-            if((c = nodeCodelets_->pop()))
+            if((c = popNodeCodelet()))
             {
                 Atomics::fetchAdd(nodePulls_, (uint64_t)1);
                 return c;
             }
             if((stealScope_ == STEAL_SIBLING || stealScope_ == STEAL_SIBLING_THEN_ANY)
-               && sibling_ && (c = sibling_->shared_.popHead()))
+               && sibling_ && (c = sibling_->popSharedHead()))
             {
                 Atomics::fetchAdd(siblingPulls_, (uint64_t)1);
                 return c;

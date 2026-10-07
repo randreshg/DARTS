@@ -87,6 +87,10 @@ namespace darts
         unsigned * tpsNode_;
         dartsPool<Codelet*> * nodeCodelets_;
         dartsPool<tpClosure*> * nodeTPs_;
+        /* Idle-poll hint counters of the node pools: one per node, only
+         * when the hint is on and a node group exists. */
+        PollHintCount * nodeCodeletsN_;
+        PollHintCount * nodeTPsN_;
         dartsCpuMask callerMaskSaved_;
         bool callerMaskValid_;
     public:

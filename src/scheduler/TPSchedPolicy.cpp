@@ -76,7 +76,7 @@ namespace {
     bool TPScheduler::pushCodeletToNode(uint64_t node, Codelet * cd)
     {
         TPScheduler * target = nodeTarget(node);
-        if(target && cd && target->nodeCodelets_->push(cd))
+        if(target && cd && target->pushNodeCodelet(cd))
             return true;
         Atomics::fetchAdd(nodeGroupRefused_, (uint64_t)1);
         return false;
@@ -85,7 +85,7 @@ namespace {
     bool TPScheduler::pushCodeletShared(uint64_t su, Codelet * cd)
     {
         TPScheduler * target = nodeGroupTarget(su);
-        if(target && cd && target->shared_.push(cd))
+        if(target && cd && target->pushShared(cd))
             return true;
         Atomics::fetchAdd(nodeGroupRefused_, (uint64_t)1);
         return false;
@@ -94,7 +94,7 @@ namespace {
     bool TPScheduler::pushTPNode(uint64_t node, tpClosure * closure)
     {
         TPScheduler * target = nodeTarget(node);
-        if(target && closure && target->nodeTPs_->push(closure))
+        if(target && closure && target->pushNodeTP(closure))
             return true;
         Atomics::fetchAdd(nodeGroupRefused_, (uint64_t)1);
         return false;
@@ -302,7 +302,7 @@ namespace {
         size_t numSub = getNumSub();
         if (!status || !numSub)
         {
-            return codelets_.push(CodeletToPush);
+            return pushOwnCodelet(CodeletToPush);
         }
         MScheduler * myCDS = static_cast<MScheduler*> (getSubScheduler((status - 1) % numSub));
         return myCDS->pushCodelet(CodeletToPush);

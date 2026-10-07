@@ -99,6 +99,8 @@ namespace darts
         unsigned suPerNode_;
         int * tpsNode_;
         StealScope stealScope_;
+        /* Idle-poll hint: -1 = not set, 0 = off, 1 = on. */
+        int idlePollHint_;
     public:
         ThreadAffinity(unsigned int mcpertp, unsigned int numbase, AffinityMode choice, unsigned int tpSched = 0, unsigned int mcSched = 0, bool LLC = false):
         papi(false),
@@ -118,7 +120,8 @@ namespace darts
         mode(choice),
         TPMask(numTPS), MCMask(numMCS),
         stickyPlacement_(-1),
-        suPerNode_(0), tpsNode_(NULL), stealScope_(STEAL_LEGACY)
+        suPerNode_(0), tpsNode_(NULL), stealScope_(STEAL_LEGACY),
+        idlePollHint_(-1)
 	{
 #ifdef COUNT
 	  for(unsigned int i=0;i<numTPS+numMCS;i++)
@@ -164,6 +167,19 @@ namespace darts
          * before constructing the Runtime. */
         void setStealScope(StealScope s) { stealScope_ = s; }
         StealScope getStealScope(void) const { return stealScope_; }
+        /* Idle-poll non-empty hint (TPScheduler::setIdlePollHint): an idle
+         * poll skips the lock of a pool whose atomic count is 0. Unset, it
+         * is on exactly for an accepted NUMA_PAIRED mask and off for every
+         * other mode; setIdlePollHint(true) opts SPREAD/COMPACT in and
+         * setIdlePollHint(false) keeps NUMA_PAIRED on the locked polls.
+         * Read once by the Runtime constructor. */
+        void setIdlePollHint(bool on) { idlePollHint_ = on ? 1 : 0; }
+        bool idlePollHint(void) const
+        {
+            if(idlePollHint_ >= 0)
+                return idlePollHint_ == 1;
+            return mode == NUMA_PAIRED && suPerNode_ == 2;
+        }
         bool generateMask(void);
         void printMask(void);
 	bool usePapi(void) { return papi; }
