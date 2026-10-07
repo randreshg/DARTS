@@ -88,6 +88,9 @@ namespace darts
         /* Placement scope and node (see PlaceScope). */
         uint32_t placedNode_;
         uint8_t  placeScope_;
+        /* The status given to the constructor or initCodelet; rearm()
+         * restores it after a DIRECTED_ENQUEUE_FAILED. */
+        uint32_t origStatus_;
 
     public:
         static const uint32_t UNPLACED_CLUSTER = 0xffffffffu;
@@ -127,6 +130,28 @@ namespace darts
          * Decrements the dependence counter of the codelet
          */
         virtual void decDep (void);
+
+        /**
+         * Method: tryDecDep
+         * The body of decDep. Returns true exactly when this call made the
+         * codelet ready and its enqueue was accepted; false when dependences
+         * remain, the counter was already zero, or a placed enqueue was
+         * refused.
+         */
+        bool tryDecDep (void);
+
+        /**
+         * Method: rearm
+         * Re-arms a fired codelet for its next invocation: SyncSlot::rearm()
+         * (counter 0 -> reset, CAS) and, on success, a status of
+         * DIRECTED_ENQUEUE_FAILED back to the original status. Returns false,
+         * changing nothing, while the counter is non-zero. A codelet that is
+         * fired repeatedly calls it first thing in fire().
+         */
+        bool rearm (void);
+
+        /* The status recorded by the constructor or initCodelet. */
+        uint32_t getOrigStatus (void) const { return origStatus_; }
         
 				/**
 				 * Method: resetCodelet

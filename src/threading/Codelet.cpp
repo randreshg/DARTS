@@ -63,7 +63,8 @@ namespace darts
     sync_(dep,res),
     myTP_(theTp),
     placedNode_(0),
-    placeScope_(SCOPE_SU)
+    placeScope_(SCOPE_SU),
+    origStatus_(stat)
     {
     }
 
@@ -73,7 +74,8 @@ namespace darts
     sync_(0U,0U),
     myTP_(0),
     placedNode_(0),
-    placeScope_(SCOPE_SU) { }
+    placeScope_(SCOPE_SU),
+    origStatus_(NIL) { }
 
     /* The node-group scopes. Returns whether the push was accepted and the
      * target to report on refusal. */
@@ -93,11 +95,18 @@ namespace darts
     {
         sync_.initSyncSlot(dep,res);
         status_ = stat ;
+        origStatus_ = stat;
         myTP_ = theTp;
     }
 
     void
     Codelet::decDep(void)
+    {
+        (void)tryDecDep();
+    }
+
+    bool
+    Codelet::tryDecDep(void)
     {
         if(sync_.decCounter())
         {
@@ -108,31 +117,44 @@ namespace darts
             {
                 uint64_t target = 0;
                 if(pushScoped(this, &target))
-                    return;
+                    return true;
                 notifyDirectedEnqueueFailure(target);
                 releaseDirectedReference(tp);
-                return;
+                return false;
             }
             if(placed_ != UNPLACED_CLUSTER)
             {
                 if(TPScheduler::pushCodeletTo(placed_, this))
-                    return;
+                    return true;
                 /* Running a placed codelet on the releasing scheduler would
                  * break its placement: report the failure instead. */
                 notifyDirectedEnqueueFailure(placed_);
                 releaseDirectedReference(tp);
-                return;
+                return false;
             }
             if(myThread.threadMCsched)
             {
                 if(myThread.threadMCsched->getLocal())
                 {
                         if(myThread.threadMCsched->pushLocal(this))
-                                return;
+                                return true;
                 }
             }
             myThread.threadTPsched->pushCodelet(this);
+            return true;
         }
+        return false;
+    }
+
+    bool
+    Codelet::rearm(void)
+    {
+        if(!sync_.rearm())
+            return false;
+        /* Only the terminal failure marker is cleared; a status the owner
+         * set on purpose stays. */
+        (void)Atomics::boolcompareAndSwap(status_, DIRECTED_ENQUEUE_FAILED, origStatus_);
+        return true;
     }
 
     bool

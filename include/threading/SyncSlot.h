@@ -66,7 +66,19 @@ namespace darts
     bool 
     decCounter(void)
     {
-        return (1==Atomics::fetchSub(counter_, 1U));
+        /* Never wrap: a decrement of a counter that is already 0 (a
+         * duplicate signal) changes nothing and returns false, so a re-armed
+         * slot (rearm()) cannot be corrupted by a late signal of the previous
+         * round. The successful CAS is the transition to ready, so at most
+         * one releaser enqueues the codelet. */
+        uint32_t current = Atomics::load(counter_);
+        while(current != 0U)
+        {
+            if(Atomics::compareAndSwap(counter_, current, current - 1U) == current)
+                return current == 1U;
+            current = Atomics::load(counter_);
+        }
+        return false;
     }
     
     //inc the counter
@@ -85,6 +97,16 @@ namespace darts
         //return Atomics::boolcompareAndSwap(counter_,0U,reset_);
     }
     
+    /* Re-arm a fired slot: counter 0 -> reset_ by CAS, so a slot whose next
+     * round already started (counter non-zero) is left alone and the call
+     * returns false. The CAS is a full barrier: writes before rearm() are
+     * visible to whoever observes the re-armed counter. */
+    bool
+    rearm(void)
+    {
+        return Atomics::boolcompareAndSwap(counter_, 0U, reset_);
+    }
+
     uint32_t getCounter(void) const{
         return counter_;
     }

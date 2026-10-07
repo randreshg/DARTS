@@ -16,7 +16,11 @@ set(DARTS_RUNTIME_TESTS
     rt_node_place.cpp
     rt_sibling_steal.cpp
     rt_su_barrier.cpp
-    rt_persistent_root.cpp)
+    rt_persistent_root.cpp
+    unit_rearm.cpp
+    unit_resident_table.cpp
+    rt_resident.cpp
+    rt_wake.cpp)
 
 foreach(src ${DARTS_RUNTIME_TESTS})
   get_filename_component(stem ${src} NAME_WE)
