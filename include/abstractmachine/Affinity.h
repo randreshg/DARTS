@@ -63,11 +63,14 @@ namespace darts
     private:
       
 	bool papi;
+#ifdef COUNT
+	/* PAPI event selection; only read by the COUNT build. */
 	bool L1;
 	bool L2;
 	bool FpIdle;
 	bool Vector;
 	bool Stall;
+#endif
 	
 	bool llc;
         unsigned int mcPerTp;
@@ -83,11 +86,13 @@ namespace darts
     public:
         ThreadAffinity(unsigned int mcpertp, unsigned int numbase, AffinityMode choice, unsigned int tpSched = 0, unsigned int mcSched = 0, bool LLC = false):
         papi(false),
+#ifdef COUNT
         L1(false),
         L2(false),
         FpIdle(false),
         Vector(false),
-        Stall(false),        
+        Stall(false),
+#endif
         llc(LLC),
         mcPerTp(mcpertp),
         numTPS(numbase), numMCS(numbase*(mcpertp)),

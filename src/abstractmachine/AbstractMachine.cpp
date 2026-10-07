@@ -33,33 +33,46 @@ typedef hwloc_obj_t obj_t;
 void 
 darts :: hwloc :: AbstractMachine :: discoverTopologyWithLLC(void)
 {
-    unsigned nbSockets = hwloc_get_nbobjs_by_type(_topology,HWLOC_OBJ_SOCKET);
+    /* The cluster level is the first cache object below the first package
+     * (the last-level cache). Every cache object at that depth that holds
+     * at least one usable PU becomes one cluster, numbered in order, so the
+     * map stays dense and in bounds when the process may use only part of
+     * the machine (a cgroup or batch allocation) and the PU count per
+     * cache differs. A topology without a package or a cache object falls
+     * back to the per-package map of discoverTopology(). */
     hwloc_obj_t o = hwloc_get_obj_by_type(_topology,HWLOC_OBJ_SOCKET,0);
-
     hwloc_obj_t obj;
-    for (obj = o->first_child;
-            obj && (obj->type != HWLOC_OBJ_L5CACHE || obj->type != HWLOC_OBJ_L4CACHE || obj->type != HWLOC_OBJ_L3CACHE || obj->type != HWLOC_OBJ_L2CACHE); 
+    for (obj = o ? o->first_child : 0;
+            obj && !hwloc_obj_type_is_cache(obj->type);
             obj = obj->first_child)
         ;
-
-    _nbClusters = nbSockets;
-    if (obj) {
-        int n = hwloc_get_nbobjs_inside_cpuset_by_type(_topology,obj->cpuset,HWLOC_OBJ_PU);
-        _nbClusters = _nbTotalUnits / n; // XXX assumes homogeneous distribution of PUs
+    if (!obj) {
+        discoverTopology();
+        return;
     }
-    _clusterMap = new Cluster[_nbClusters];
 
-    // TODO Refactor this code and the next function's code into a single one 
-    for (o = obj; o; o = o->next_cousin)  {
-        int           nUnits = hwloc_get_nbobjs_inside_cpuset_by_type(_topology,o->cpuset,HWLOC_OBJ_PU);
+    const int depth = obj->depth;
+    const unsigned nbCaches = hwloc_get_nbobjs_by_depth(_topology, depth);
+    _clusterMap = new Cluster[nbCaches ? nbCaches : 1];
+    _nbClusters = 0;
+    for (unsigned k = 0; k < nbCaches; ++k) {
+        o = hwloc_get_obj_by_depth(_topology, depth, k);
+        int nUnits = o ? hwloc_get_nbobjs_inside_cpuset_by_type(_topology,o->cpuset,HWLOC_OBJ_PU) : 0;
+        if (nUnits <= 0)
+            continue;
         Unit *units  = new Unit[nUnits];
         for (int i = 0; i < nUnits; ++i) {
             hwloc_obj_t t = hwloc_get_obj_inside_cpuset_by_type(_topology,o->cpuset,HWLOC_OBJ_PU,i);
-            Unit hwu(o->logical_index,t->logical_index,t->os_index);
+            Unit hwu(_nbClusters,t->logical_index,t->os_index);
             units[i] = hwu; // simple shallow copy
         }
-        Cluster cluster(o->logical_index,o->logical_index,nUnits,units);
-        _clusterMap[o->logical_index] = cluster; // simple shallow copy
+        Cluster cluster(_nbClusters,_nbClusters,nUnits,units);
+        _clusterMap[_nbClusters++] = cluster; // simple shallow copy
+    }
+    if (_nbClusters == 0) {
+        delete [] _clusterMap;
+        _clusterMap = 0;
+        discoverTopology();
     }
 }
 
