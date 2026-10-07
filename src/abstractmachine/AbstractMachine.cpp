@@ -30,6 +30,29 @@
 
 typedef hwloc_obj_t obj_t;
 
+/* hwloc 2 keeps NUMA nodes out of the main object tree (they are memory
+ * children), so a cluster's ancestors need not name one. Test the NUMA
+ * nodes' cpusets instead: first a node that covers the whole cluster, then
+ * the first one it intersects. */
+uint64_t
+darts :: hwloc :: AbstractMachine :: numaNodeOfCpuSet(hwloc_topology_t topology,
+                                                      hwloc_const_cpuset_t cpuset)
+{
+    if (!topology || !cpuset)
+        return 0;
+    obj_t n = 0;
+    while ((n = hwloc_get_next_obj_by_type(topology, HWLOC_OBJ_NUMANODE, n)) != 0) {
+        if (n->cpuset && hwloc_bitmap_isincluded(cpuset, n->cpuset))
+            return (uint64_t)n->logical_index;
+    }
+    n = 0;
+    while ((n = hwloc_get_next_obj_by_type(topology, HWLOC_OBJ_NUMANODE, n)) != 0) {
+        if (n->cpuset && hwloc_bitmap_intersects(cpuset, n->cpuset))
+            return (uint64_t)n->logical_index;
+    }
+    return 0;
+}
+
 void 
 darts :: hwloc :: AbstractMachine :: discoverTopologyWithLLC(void)
 {
@@ -66,7 +89,7 @@ darts :: hwloc :: AbstractMachine :: discoverTopologyWithLLC(void)
             Unit hwu(_nbClusters,t->logical_index,t->os_index);
             units[i] = hwu; // simple shallow copy
         }
-        Cluster cluster(_nbClusters,_nbClusters,nUnits,units);
+        Cluster cluster(_nbClusters,_nbClusters,nUnits,units,numaNodeOfCpuSet(_topology,o->cpuset));
         _clusterMap[_nbClusters++] = cluster; // simple shallow copy
     }
     if (_nbClusters == 0) {
@@ -91,7 +114,7 @@ darts :: hwloc :: AbstractMachine :: discoverTopology(void)
             Unit hwu(o->logical_index,t->logical_index,t->os_index);
             units[i] = hwu; // simple shallow copy
         }
-        Cluster cluster(o->logical_index,o->logical_index,nUnits,units);
+        Cluster cluster(o->logical_index,o->logical_index,nUnits,units,numaNodeOfCpuSet(_topology,o->cpuset));
         _clusterMap[o->logical_index] = cluster; // simple shallow copy
     }
 }

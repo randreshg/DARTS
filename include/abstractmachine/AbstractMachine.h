@@ -57,6 +57,7 @@ namespace hwloc {
         Cluster         *_clusterMap;
         size_t           _nbClusters;
         size_t           _nbTotalUnits;
+        size_t           _nbNumaNodes;
 
         /**
          * \brief Simple initialization of the topology description.
@@ -65,6 +66,12 @@ namespace hwloc {
         init(bool useLLC)
         {
             _nbTotalUnits = hwloc_get_nbobjs_by_type(_topology,HWLOC_OBJ_PU);
+            {
+                /* No NUMA object (NUMA disabled, or a backend that exposes
+                 * none) is one node. */
+                int n = hwloc_get_nbobjs_by_type(_topology,HWLOC_OBJ_NUMANODE);
+                _nbNumaNodes = (n > 0) ? (size_t)n : (size_t)1;
+            }
             if (useLLC == false) {
                 discoverTopology();
             } else {
@@ -93,9 +100,17 @@ namespace hwloc {
          */
         void discoverTopology(void);
 
+        /**
+         * \brief Logical index of the NUMA node whose cpuset holds \p cpuset
+         * (else the first one it intersects, else 0). Read-only query.
+         */
+        static uint64_t numaNodeOfCpuSet(hwloc_topology_t topology,
+                                         hwloc_const_cpuset_t cpuset);
+
     public:
         AbstractMachine(bool useLLC=false)
-        : _topology(0), _clusterMap(0), _nbClusters(0), _nbTotalUnits(0)
+        : _topology(0), _clusterMap(0), _nbClusters(0), _nbTotalUnits(0),
+          _nbNumaNodes(1)
         {
             hwloc_topology_init(&_topology);
             hwloc_topology_load(_topology);
@@ -115,6 +130,19 @@ namespace hwloc {
         size_t   getNbClusters()   const { return _nbClusters;   }
         Cluster* getClusterMap()   const { return _clusterMap;   }
         size_t   getTotalNbUnits() const { return _nbTotalUnits; }
+        /** \brief Number of NUMA nodes (1 when the topology exposes none) */
+        size_t   getNbNumaNodes()  const { return _nbNumaNodes;  }
+
+        /**
+         * \brief The NUMA node of cluster \p c (0 for an out-of-range
+         * cluster or a machine without NUMA objects).
+         */
+        uint64_t numaNodeOfCluster(size_t c) const
+        {
+            if (!_clusterMap || c >= _nbClusters)
+                return 0;
+            return _clusterMap[c].getNumaNode();
+        }
     };
 } // hwloc
 } // darts

@@ -50,9 +50,13 @@ namespace hwloc {
 
         /** \brief units held in the cluster */
         Unit *_units;
+
+        /** \brief Logical index of the NUMA node holding the cluster's
+         * units (0 on a machine without NUMA objects) */
+        uint64_t      _numaNode;
     public:
-        Cluster(uint64_t id=0, uint64_t memId=0, uint64_t nbUnits=0, Unit *units=0) 
-            : _id(id), _memId(memId), _nbUnits(nbUnits), _units(units)
+        Cluster(uint64_t id=0, uint64_t memId=0, uint64_t nbUnits=0, Unit *units=0, uint64_t numaNode=0) 
+            : _id(id), _memId(memId), _nbUnits(nbUnits), _units(units), _numaNode(numaNode)
         {}
         ~Cluster() { }
 
@@ -64,6 +68,8 @@ namespace hwloc {
         uint64_t      getNbUnits() const { return _nbUnits; }
         /** \brief Returns the array of units in the cluster */
         Unit *getUnits()   const { return _units;   }
+        /** \brief Returns the NUMA node of the cluster */
+        uint64_t      getNumaNode() const { return _numaNode; }
     };
 
 
