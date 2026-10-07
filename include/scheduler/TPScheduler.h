@@ -56,17 +56,38 @@ namespace darts
         std::vector<Scheduler*> children_;
         
     protected:
+        /* Stealable TP closures (invoke<>, pushTP). */
         dartsPool<tpClosure*> ready_;
+        /* Placed TP closures (pushTPPlaced): this scheduler is their
+         * destination and steal() never draws from here. */
+        dartsPool<tpClosure*> placed_;
         dartsPool<Codelet*> codelets_;
 
     public:
         
         TPScheduler(void):
         numberOfPeers(0),
-        peers_(NULL)
+        peers_(NULL),
+        placedCount_(0),
+        clusterIndex_(0),
+        stickyPlacement_(false)
         {
             
         }
+
+        /* This scheduler's index in the Runtime's scheduler table, i.e. the
+         * index place<> and pushCodeletTo() resolve a target to. getID() is
+         * the global thread id and differs from it whenever there are micro
+         * schedulers. Set by the Runtime when the scheduler is created. */
+        void     setClusterIndex(unsigned idx) { clusterIndex_ = idx; }
+        unsigned getClusterIndex(void) const   { return clusterIndex_; }
+
+        /* Whether place<> pushes to placed_ (sticky, never stolen) instead
+         * of the stealable ready_ pool. Off by default, which keeps the
+         * existing place<> behaviour; the Runtime sets it from
+         * ThreadAffinity::stickyPlacement() before any worker starts. */
+        void setStickyPlacement(bool on)  { stickyPlacement_ = on; }
+        bool stickyPlacement(void) const  { return stickyPlacement_; }
         
 	~TPScheduler(void){}
 
@@ -117,6 +138,9 @@ namespace darts
             return 0;
         }
         
+        /* Steal a closure from a random peer's stealable pool. A placed
+         * closure is never in that pool; placedSteals() counts any that
+         * would be returned anyway, so the invariant is measured. */
         tpClosure *
         steal(void)
         {
@@ -125,11 +149,17 @@ namespace darts
                 uint64_t random = rand() % numberOfPeers;
                 if(random!=getID())
                 {
-                    return peers_[random]->popTP();
+                    tpClosure * stolen = peers_[random]->popTPStealable();
+                    if(stolen && stolen->sticky)
+                        Atomics::fetchAdd(placedSteals_, (uint64_t)1);
+                    return stolen;
                 }
             }
             return NULL;
         }  
+
+        /* Placed closures ever returned by steal(); stays 0. */
+        static uint64_t placedSteals(void) { return Atomics::load(placedSteals_); }
         
         virtual void policy(void) = 0;
                 
@@ -139,8 +169,48 @@ namespace darts
             return ready_.push(TPtoPush);
         }
         
+        /* Push a closure that must expand on this scheduler. */
+        virtual bool
+        pushTPPlaced(tpClosure * TPtoPush)
+        {
+            TPtoPush->sticky = true;
+            Atomics::fetchAdd(placedCount_, (uint64_t)1);
+            if(placed_.push(TPtoPush))
+                return true;
+            Atomics::fetchSub(placedCount_, (uint64_t)1);
+            return false;
+        }
+
+        /* The push place<> uses: sticky when stickyPlacement() is on,
+         * otherwise the scheduler's ordinary pushTP(). */
+        bool
+        placeTP(tpClosure * TPtoPush)
+        {
+            return stickyPlacement_ ? pushTPPlaced(TPtoPush) : pushTP(TPtoPush);
+        }
+
+        /* Own-policy pop: placed work first, then stealable work.
+         * placedCount_ is only a hint that keeps the common no-placed-work
+         * case at one load instead of a pool lock; correctness comes from
+         * the separate pools. */
         virtual tpClosure * 
         popTP(void)
+        {
+            if(Atomics::load(placedCount_))
+            {
+                tpClosure * placed = placed_.pop();
+                if(placed)
+                {
+                    Atomics::fetchSub(placedCount_, (uint64_t)1);
+                    return placed;
+                }
+            }
+            return ready_.pop();
+        }
+
+        /* Steal-path pop: stealable work only. */
+        virtual tpClosure *
+        popTPStealable(void)
         {
             return ready_.pop();
         }
@@ -169,6 +239,10 @@ namespace darts
         static TPScheduler * create(unsigned int type);
 
     private:
+        volatile uint64_t placedCount_;
+        unsigned          clusterIndex_;
+        bool              stickyPlacement_;
+        static volatile uint64_t placedSteals_;
         static volatile uint64_t directedRefused_;
     };
 }

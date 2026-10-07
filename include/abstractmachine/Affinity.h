@@ -83,6 +83,8 @@ namespace darts
         AffinityMode mode;
         AffinityMask TPMask;
         AffinityMask MCMask;
+        /* place<> stickiness: -1 = not set (off), 0 = off, 1 = on. */
+        int stickyPlacement_;
     public:
         ThreadAffinity(unsigned int mcpertp, unsigned int numbase, AffinityMode choice, unsigned int tpSched = 0, unsigned int mcSched = 0, bool LLC = false):
         papi(false),
@@ -100,7 +102,8 @@ namespace darts
         eventSet(new int[numTPS+numMCS]),
         eventCounter(new long long[(numTPS+numMCS)*NUMEVENTS]),
         mode(choice),
-        TPMask(numTPS), MCMask(numMCS) 
+        TPMask(numTPS), MCMask(numMCS),
+        stickyPlacement_(-1)
 	{
 #ifdef COUNT
 	  for(unsigned int i=0;i<numTPS+numMCS;i++)
@@ -124,6 +127,11 @@ namespace darts
         AffinityMask * getMCMask(void) { return &MCMask; }
         unsigned int getTPpolicy(void) { return TPpolicy; }
         unsigned int getMCpolicy(void) { return MCpolicy; }
+        /* Make place<> closures sticky: they go to the target scheduler's
+         * placed pool, expand only there and are never stolen. Off unless
+         * set. Read once by the Runtime constructor. */
+        void setStickyPlacement(bool on) { stickyPlacement_ = on ? 1 : 0; }
+        bool stickyPlacement(void) const { return stickyPlacement_ == 1; }
         bool generateMask(void);
         void printMask(void);
 	bool usePapi(void) { return papi; }

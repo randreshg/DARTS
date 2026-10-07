@@ -2255,7 +2255,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1 >
@@ -2268,7 +2268,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2 >
@@ -2281,7 +2281,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
 
     template<class newTP, class arg1, class arg2, class arg3 >
@@ -2294,7 +2294,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4 >
@@ -2307,7 +2307,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5 >
@@ -2320,7 +2320,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2335,7 +2335,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2353,7 +2353,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2371,7 +2371,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2389,7 +2389,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2407,7 +2407,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2430,7 +2430,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2453,7 +2453,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2476,7 +2476,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2499,7 +2499,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2522,7 +2522,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2550,7 +2550,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2578,7 +2578,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2606,7 +2606,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2634,7 +2634,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2662,7 +2662,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2695,7 +2695,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2728,7 +2728,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2761,7 +2761,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2794,7 +2794,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2827,7 +2827,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2865,7 +2865,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2903,7 +2903,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2941,7 +2941,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2979,7 +2979,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -3017,7 +3017,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -3060,7 +3060,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -3103,7 +3103,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
 
 }

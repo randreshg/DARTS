@@ -9,7 +9,8 @@
 #   ctest -L runtime          (on an otherwise idle node)
 
 set(DARTS_RUNTIME_TESTS
-    rt_directed.cpp)
+    rt_directed.cpp
+    rt_sticky_place.cpp)
 
 foreach(src ${DARTS_RUNTIME_TESTS})
   get_filename_component(stem ${src} NAME_WE)

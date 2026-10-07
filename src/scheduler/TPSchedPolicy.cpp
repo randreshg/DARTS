@@ -41,6 +41,7 @@
 namespace darts {
 
     volatile uint64_t TPScheduler::directedRefused_ = 0;
+    volatile uint64_t TPScheduler::placedSteals_ = 0;
 
     bool TPScheduler::pushCodeletTo(uint64_t cluster, Codelet * cd)
     {

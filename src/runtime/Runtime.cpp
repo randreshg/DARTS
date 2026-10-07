@@ -80,6 +80,7 @@ void * TPThread( void * args)
     
     TPScheduler * myTPSched = rt->newTPSched(clusterId, tpargs->tpSched);
     myTPSched->setID(threadId);
+    myTPSched->setClusterIndex(clusterId);
     myTPSched->setNumPeers(rt->getNumTPS());
     rt->finalSignal.addAliveSignal(threadId,myTPSched);
     
@@ -104,6 +105,7 @@ void TPThread0( Runtime * rt, unsigned int tpPolicy)
 {   
     TPScheduler * myTPSched = rt->newTPSched(0, tpPolicy);
     myTPSched->setID(0);
+    myTPSched->setClusterIndex(0);
     myTPSched->setNumPeers(rt->getNumTPS());
     rt->finalSignal.addAliveSignal(0,myTPSched);
     
@@ -135,6 +137,10 @@ void Runtime::linkTPSched()
             TPSched_[i]->addPeer(TPSched_[j], j);
         }
     }
+    /* Before TPThread0's decFull(), so before any worker runs. */
+    if(affinity_ && affinity_->stickyPlacement())
+        for(unsigned int i=0;i<numTPSched_;i++)
+            TPSched_[i]->setStickyPlacement(true);
 }
 
 void Runtime::linkMCSched()
