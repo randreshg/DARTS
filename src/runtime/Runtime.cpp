@@ -220,6 +220,16 @@ spin_        (true)
         localThreads_[i].run();
 
     TPThread0(this, 0);
+
+    /* Store the scheduler table on each TP scheduler, as the affinity
+     * constructor does, so place<> and directed codelet pushes work on this
+     * runtime too. */
+    for(unsigned int i=0;i<numTPSched_;i++)
+    {
+      TPSched_[i]->setRuntimeTPScheds((Scheduler**)TPSched_);
+      TPSched_[i]->setNumTPSched(numTPSched_);
+      TPSched_[i]->setNumMCSched(numMCSched_);
+    }
 }
 
 Runtime::Runtime(ThreadAffinity * affinity):

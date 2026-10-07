@@ -33,6 +33,7 @@
 #include <vector>
 #include <stdlib.h>
 #include "dartsPool.h"
+#include "Atomics.h"
 
 #ifdef TRACE
 #include "getClock.h"
@@ -155,8 +156,20 @@ namespace darts
         {
             return codelets_.pop();
         }
+
+        /* Enqueue a ready codelet on TP scheduler `cluster`, an index into
+         * the Runtime's scheduler table (the index place<> uses). The index
+         * is bounds checked, not wrapped. Refused, and counted in
+         * directedRefused(), when the index is out of range, when the
+         * calling thread belongs to no DARTS scheduler, or when the queue
+         * push fails; the caller keeps ownership of the codelet. */
+        static bool pushCodeletTo(uint64_t cluster, Codelet * cd);
+        static uint64_t directedRefused(void) { return Atomics::load(directedRefused_); }
         
         static TPScheduler * create(unsigned int type);
+
+    private:
+        static volatile uint64_t directedRefused_;
     };
 }
 

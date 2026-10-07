@@ -33,9 +33,21 @@
 #include "codeletDefines.h"
 #include "Atomics.h"
 #include "threadlocal.h"
+#include "TPScheduler.h"
 
 namespace darts
 {
+    /* See Codelet.cpp: roll back the reference a refused directed enqueue
+     * took, deleting a child TP on its last reference. */
+    static void releaseDirectedReference(ThreadedProcedure * tp)
+    {
+        if(!tp)
+            return;
+        const bool deleteTP = tp->checkParent();
+        if(tp->decRef() && deleteTP)
+            delete tp;
+    }
+
     //Make the defualt reference count 1 so when stealing the TP will not be deleted prematurely
     ThreadedProcedure::ThreadedProcedure(void):
     ref_(1),
@@ -100,6 +112,16 @@ namespace darts
         if(toAdd->codeletReady())
         {
             Atomics::fetchAdd(ref_, 1U);
+            if(toAdd->isPlaced())
+            {
+                if(TPScheduler::pushCodeletTo(toAdd->placedCluster(), toAdd))
+                    return;
+                toAdd->notifyDirectedEnqueueFailure(toAdd->placedCluster());
+                /* The hook may have released another reference, which can
+                 * leave this rollback as the last one. */
+                releaseDirectedReference(this);
+                return;
+            }
             myThread.threadTPsched->pushCodelet(toAdd);
         }
     }    

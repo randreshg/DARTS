@@ -33,11 +33,44 @@
 #include "MicroScheduler.h"
 #include <cstdlib>
 #include "tpClosure.h"
+#include "threadlocal.h"
 #ifdef TRACE
 #include "getClock.h"
 #endif
 
 namespace darts {
+
+    volatile uint64_t TPScheduler::directedRefused_ = 0;
+
+    bool TPScheduler::pushCodeletTo(uint64_t cluster, Codelet * cd)
+    {
+        TPScheduler * mine = myThread.threadTPsched;
+        if(mine && cd && cluster < mine->getNumTPSched())
+        {
+            TPScheduler * target = static_cast<TPScheduler *>(mine->getRuntimeTPSched(cluster));
+            if(target)
+            {
+                bool pushed = false;
+#ifdef TBB
+                pushed = target->pushCodelet(cd);
+#else
+                /* The non-TBB pool is a locked std::deque of pointers:
+                 * push_back has the strong guarantee, so an exception means
+                 * nothing was published and the push can be reported as
+                 * refused. */
+                try {
+                    pushed = target->pushCodelet(cd);
+                } catch (...) {
+                    pushed = false;
+                }
+#endif
+                if(pushed)
+                    return true;
+            }
+        }
+        Atomics::fetchAdd(directedRefused_, (uint64_t)1);
+        return false;
+    }
 
     void
     TPRoundRobin::policy() {

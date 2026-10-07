@@ -53,7 +53,11 @@ namespace darts
 				 * Variable: status_
 				 * The status of the codelet TODO: Explicit?
 				*/
-        uint32_t status_;
+        volatile uint32_t status_;
+        /* Optional owner TP scheduler (setPlacedCluster). Set before a
+         * dependence can be released, so it is immutable while an
+         * invocation is in flight. */
+        uint32_t placed_;
 
     protected:
                                 /*
@@ -68,6 +72,10 @@ namespace darts
         ThreadedProcedure * myTP_;
 
     public:
+        static const uint32_t UNPLACED_CLUSTER = 0xffffffffu;
+        /* Status recorded when an explicitly placed ready codelet could not
+         * be enqueued on its owner (see onDirectedEnqueueFailure). */
+        static const uint32_t DIRECTED_ENQUEUE_FAILED = 0xfffffffeu;
         /**
 				 * Constructor: Codelet(uint32_t dep, uint32_t res, ThreadedProcedure * theTp, uint32_t stat);
 				 * 
@@ -127,6 +135,28 @@ namespace darts
 				 * Gets the status of the codelet (TODO: Has to be explained)
          */
         uint32_t getStatus (void) const;  
+
+        /* Directed placement. A placed codelet is enqueued, when it becomes
+         * ready, on TP scheduler `cluster` (an index into the Runtime's
+         * scheduler table, the same index place<> uses) instead of on the
+         * scheduler that released it. That queue is never drawn by TP
+         * stealing, so the codelet fires on the named scheduler. An
+         * unplaced codelet (the default) keeps the existing behaviour. */
+        void     setPlacedCluster(uint32_t cluster) { placed_ = cluster; }
+        void     clearPlacedCluster(void) { placed_ = UNPLACED_CLUSTER; }
+        uint32_t placedCluster(void) const { return placed_; }
+        bool     isPlaced(void) const { return placed_ != UNPLACED_CLUSTER; }
+
+        /* A placed codelet whose enqueue is refused (index out of range,
+         * released from a thread that belongs to no DARTS scheduler, or a
+         * failing queue) is never run somewhere else: its status becomes
+         * DIRECTED_ENQUEUE_FAILED, onDirectedEnqueueFailure() is called, and
+         * the TP reference taken for the enqueue is rolled back. The hook may
+         * release references it owns but must not delete this codelet or
+         * its TP. */
+        bool directedEnqueueFailed(void) const;
+        void notifyDirectedEnqueueFailure(uint64_t target);
+        virtual void onDirectedEnqueueFailure(uint64_t target) { (void)target; }
 
 				/**
 				 * Method: getTP

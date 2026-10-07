@@ -163,3 +163,11 @@ add_subdirectory( include )
 add_subdirectory( src )
 add_subdirectory( apps )
 add_subdirectory( examples )
+
+# Runtime tests (tests/runtime). Off by default; the default build is
+# unchanged.
+option(DARTS_BUILD_RUNTIME_TESTS "Build the runtime tests in tests/runtime" OFF)
+if(DARTS_BUILD_RUNTIME_TESTS)
+    enable_testing()
+    add_subdirectory( tests/runtime )
+endif()
