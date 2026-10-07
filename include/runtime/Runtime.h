@@ -94,6 +94,13 @@ namespace darts
         Runtime(unsigned int maxCluster = -1, unsigned int maxWorker = -1);
         Runtime(ThreadAffinity * affinity);
         void run(tpClosure * tpToStart);
+        /* run() with the root closure pushed to TP scheduler `tps` as a
+         * placed closure (pushTPPlaced: never stolen) instead of TP
+         * scheduler 0's stealable queue; TP scheduler 0 still runs its policy
+         * on the calling thread until finalSignal. Returns false, without
+         * running and without taking ownership of `root`, when root is NULL,
+         * tps is out of range or the push is refused. */
+        bool runPlaced(unsigned tps, tpClosure * root);
         ~Runtime(void);
         unsigned int getNumTPS(void) {return numTPSched_;}
         unsigned int getNumMCS(void) {return numMCSched_;}

@@ -35,7 +35,8 @@ set(runtime_lib_src
 
 set(runtime_inc
     ${CMAKE_SOURCE_DIR}/include/runtime/Runtime.h
-    ${CMAKE_SOURCE_DIR}/include/runtime/CodeletFinal.h)
+    ${CMAKE_SOURCE_DIR}/include/runtime/CodeletFinal.h
+    ${CMAKE_SOURCE_DIR}/include/runtime/PersistentRoot.h)
 
 add_library(darts STATIC ${runtime_lib_src} ${runtime_inc})
 target_link_libraries(darts common amm codelet scheduler threadlocal rt)
@@ -49,7 +50,7 @@ if ( COUNT )
 endif ( COUNT )
 
 set_target_properties(darts PROPERTIES PUBLIC_HEADER 
-"${CMAKE_SOURCE_DIR}/include/runtime/Runtime.h;${CMAKE_SOURCE_DIR}/include/runtime/CodeletFinal.h")
+"${CMAKE_SOURCE_DIR}/include/runtime/Runtime.h;${CMAKE_SOURCE_DIR}/include/runtime/CodeletFinal.h;${CMAKE_SOURCE_DIR}/include/runtime/PersistentRoot.h")
 
 install(TARGETS darts 
     EXPORT dartsLibraryDepends

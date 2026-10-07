@@ -176,6 +176,18 @@ void Runtime::run(tpClosure * tpToStart)
     TPSched_[0]->policy();
 }
 
+bool Runtime::runPlaced(unsigned tps, tpClosure * root)
+{
+    if(!root || tps >= numTPSched_)
+        return false;
+    finalSignal.resetCodelet();
+    TPSched_[0]->resurrect();
+    if(!TPSched_[tps]->pushTPPlaced(root))
+        return false;
+    TPSched_[0]->policy();
+    return true;
+}
+
 Runtime::Runtime(unsigned int maxCluster, unsigned int maxWorker):
 AbsMac       (false),
 clusterMap   (AbsMac.getClusterMap()),
