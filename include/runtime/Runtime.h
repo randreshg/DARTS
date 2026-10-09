@@ -76,11 +76,35 @@ namespace darts
         volatile unsigned int mccount_;
         volatile unsigned int fullcount_;
         volatile bool spin_;
+        /* NUMA_PAIRED only (0 / NULL / true on every other runtime):
+         * constructionOk_ is false when a pin failed or DARTS_AFFINITY
+         * overrode the layout; tpsNode_[i] = NUMA node of TP scheduler i;
+         * one node codelet pool and one node closure pool per node; the
+         * constructing thread (TP scheduler 0) is pinned and its previous
+         * mask restored by the destructor. */
+        bool constructionOk_;
+        unsigned numNodes_;
+        unsigned * tpsNode_;
+        dartsPool<Codelet*> * nodeCodelets_;
+        dartsPool<tpClosure*> * nodeTPs_;
+        /* Idle-poll hint counters of the node pools: one per node, only
+         * when the hint is on and a node group exists. */
+        PollHintCount * nodeCodeletsN_;
+        PollHintCount * nodeTPsN_;
+        dartsCpuMask callerMaskSaved_;
+        bool callerMaskValid_;
     public:
         static CodeletFinal finalSignal;
         Runtime(unsigned int maxCluster = -1, unsigned int maxWorker = -1);
         Runtime(ThreadAffinity * affinity);
         void run(tpClosure * tpToStart);
+        /* run() with the root closure pushed to TP scheduler `tps` as a
+         * placed closure (pushTPPlaced: never stolen) instead of TP
+         * scheduler 0's stealable queue; TP scheduler 0 still runs its policy
+         * on the calling thread until finalSignal. Returns false, without
+         * running and without taking ownership of `root`, when root is NULL,
+         * tps is out of range or the push is refused. */
+        bool runPlaced(unsigned tps, tpClosure * root);
         ~Runtime(void);
         unsigned int getNumTPS(void) {return numTPSched_;}
         unsigned int getNumMCS(void) {return numMCSched_;}
@@ -100,6 +124,18 @@ namespace darts
                 usecs += range;
             }
         }
+
+        /* False when a NUMA_PAIRED runtime could not be placed as requested
+         * (a pin failed, or DARTS_AFFINITY overrode the layout); the caller
+         * should not trust placement-dependent results. Always true for the
+         * other layouts. */
+        bool constructionOk(void) const { return constructionOk_; }
+        /* Node-group layer: numNodes() is 0 and numaPaired() false unless
+         * the Runtime was built from an accepted NUMA_PAIRED mask;
+         * nodeOfTPS(i) is ~0u without a node group or out of range. */
+        unsigned numNodes(void) const { return numNodes_; }
+        unsigned nodeOfTPS(unsigned i) const { return (tpsNode_ && i < numTPSched_) ? tpsNode_[i] : ~0u; }
+        bool     numaPaired(void) const { return numNodes_ != 0; }
 
         void linkTPSched(void);
         void linkMCSched(void);       

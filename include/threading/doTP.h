@@ -41,6 +41,7 @@ namespace darts {
         ThreadedProcedure * temp = new newTP();
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -73,6 +74,7 @@ namespace darts {
         ThreadedProcedure * temp = new newTP(args->a1);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -103,6 +105,7 @@ namespace darts {
         ThreadedProcedure * temp = new newTP(args->a1, args->a2);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -133,6 +136,7 @@ namespace darts {
         ThreadedProcedure * temp = new newTP(args->a1, args->a2, args->a3);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -163,6 +167,7 @@ namespace darts {
         ThreadedProcedure * temp = new newTP(args->a1, args->a2, args->a3, args->a4);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -193,6 +198,7 @@ namespace darts {
         ThreadedProcedure * temp = new newTP(args->a1, args->a2, args->a3, args->a4, args->a5);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -227,6 +233,7 @@ namespace darts {
                 args->a6);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -271,6 +278,7 @@ namespace darts {
                 args->a6, args->a7);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -315,6 +323,7 @@ namespace darts {
                 args->a6, args->a7, args->a8);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -359,6 +368,7 @@ namespace darts {
                 args->a6, args->a7, args->a8, args->a9);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -403,6 +413,7 @@ namespace darts {
                 args->a6, args->a7, args->a8, args->a9, args->a10);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -451,6 +462,7 @@ namespace darts {
                 args->a11);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -509,6 +521,7 @@ namespace darts {
                 args->a11, args->a12);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -567,6 +580,7 @@ namespace darts {
                 args->a11, args->a12, args->a13);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -625,6 +639,7 @@ namespace darts {
                 args->a11, args->a12, args->a13, args->a14);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -683,6 +698,7 @@ namespace darts {
                 args->a11, args->a12, args->a13, args->a14, args->a15);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -745,6 +761,7 @@ namespace darts {
                 args->a16);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -817,6 +834,7 @@ namespace darts {
                 args->a16, args->a17);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -889,6 +907,7 @@ namespace darts {
                 args->a16, args->a17, args->a18);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -961,6 +980,7 @@ namespace darts {
                 args->a16, args->a17, args->a18, args->a19);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1033,6 +1053,7 @@ namespace darts {
                 args->a16, args->a17, args->a18, args->a19, args->a20);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1109,6 +1130,7 @@ namespace darts {
                 args->a21);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1195,6 +1217,7 @@ namespace darts {
                 args->a21, args->a22);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1281,6 +1304,7 @@ namespace darts {
                 args->a21, args->a22, args->a23);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1367,6 +1391,7 @@ namespace darts {
                 args->a21, args->a22, args->a23, args->a24);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1453,6 +1478,7 @@ namespace darts {
                 args->a21, args->a22, args->a23, args->a24, args->a25);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1543,6 +1569,7 @@ namespace darts {
                 args->a26);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1643,6 +1670,7 @@ namespace darts {
                 args->a26, args->a27);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1743,6 +1771,7 @@ namespace darts {
                 args->a26, args->a27, args->a28);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1843,6 +1872,7 @@ namespace darts {
                 args->a26, args->a27, args->a28, args->a29);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -1944,6 +1974,7 @@ namespace darts {
                 args->a26, args->a27, args->a28, args->a29, args->a30);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -2048,6 +2079,7 @@ namespace darts {
                 args->a31);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -2162,6 +2194,7 @@ namespace darts {
                 args->a31, args->a32);
         if (temp->decRef()) {
             delete temp;
+            myThread.tempParent = NULL;
             return NULL;
         }
         myThread.tempParent = NULL;
@@ -2255,7 +2288,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1 >
@@ -2268,7 +2301,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2 >
@@ -2281,7 +2314,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
 
     template<class newTP, class arg1, class arg2, class arg3 >
@@ -2294,7 +2327,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4 >
@@ -2307,7 +2340,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5 >
@@ -2320,7 +2353,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2335,7 +2368,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2353,7 +2386,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2371,7 +2404,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2389,7 +2422,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2407,7 +2440,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2430,7 +2463,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2453,7 +2486,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2476,7 +2509,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2499,7 +2532,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2522,7 +2555,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2550,7 +2583,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2578,7 +2611,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2606,7 +2639,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2634,7 +2667,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2662,7 +2695,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2695,7 +2728,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2728,7 +2761,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2761,7 +2794,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2794,7 +2827,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2827,7 +2860,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2865,7 +2898,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2903,7 +2936,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2941,7 +2974,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -2979,7 +3012,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -3017,7 +3050,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -3060,7 +3093,7 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
     }
     
     template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
@@ -3103,7 +3136,1006 @@ namespace darts {
 
         uint64_t TPSnum = targetTPSnum % (myThread.threadTPsched->getNumTPSched());
         TPScheduler* targetTPsched = static_cast<TPScheduler*>(myThread.threadTPsched->getRuntimeTPSched(TPSnum));
-        targetTPsched->pushTP(closure);
+        targetTPsched->placeTP(closure);
+    }
+
+    /* placeNode<>: as place<>, but the closure goes to the node closure pool
+     * of NUMA node `node` (TPScheduler::pushTPNode; needs a NUMA_PAIRED
+     * Runtime). It is NOT sticky: either SU of the node may expand it,
+     * and steal() never draws from the node pool. Returns false, with the
+     * closure deleted and the parent reference dropped, when the push is
+     * refused (no node group, node out of range, or a non-DARTS thread). */
+    template<class newTP>
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory<newTP>;
+        tpClosure * closure = new tpClosure(funct, parentTP);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1)
+    { 
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1 >;
+        tpClosure * closure = new tpClosure1< arg1 > (funct, parentTP, A1);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2 >;
+        tpClosure * closure = new tpClosure2< arg1, arg2 > (funct, parentTP, A1, A2);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+
+    template<class newTP, class arg1, class arg2, class arg3 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3 >;
+        tpClosure * closure = new tpClosure3< arg1, arg2, arg3 > (funct, parentTP, A1, A2, A3);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4 >;
+        tpClosure * closure = new tpClosure4< arg1, arg2, arg3, arg4 > (funct, parentTP, A1, A2, A3, A4);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5 >;
+        tpClosure * closure = new tpClosure5< arg1, arg2, arg3, arg4, arg5 > (funct, parentTP, A1, A2, A3, A4, A5);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6)
+    {      
+      parentTP->incRef();
+      tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5, arg6 >;
+      tpClosure * closure = new tpClosure6< arg1, arg2, arg3, arg4, arg5, arg6 > (funct, parentTP, A1, A2, A3, A4, A5, A6);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7 >;
+        tpClosure * closure = new tpClosure7< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8 >;
+        tpClosure * closure = new tpClosure8< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9 >;
+        tpClosure * closure = new tpClosure9< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10 >;
+        tpClosure * closure = new tpClosure10< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11 >;
+        tpClosure * closure = new tpClosure11< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12 >;
+        tpClosure * closure = new tpClosure12< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13 >;
+        tpClosure * closure = new tpClosure13< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14 >;
+        tpClosure * closure = new tpClosure14< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15 >;
+        tpClosure * closure = new tpClosure15< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16 >;
+        tpClosure * closure = new tpClosure16< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17 >;
+        tpClosure * closure = new tpClosure17< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18 >;
+        tpClosure * closure = new tpClosure18< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19 >;
+        tpClosure * closure = new tpClosure19< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20 >;
+        tpClosure * closure = new tpClosure20< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21 >;
+        tpClosure * closure = new tpClosure21< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22 >;
+        tpClosure * closure = new tpClosure22< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23 >;
+        tpClosure * closure = new tpClosure23< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24 >;
+        tpClosure * closure = new tpClosure24< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25 >;
+        tpClosure * closure = new tpClosure25< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26 >;
+        tpClosure * closure = new tpClosure26< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26, class arg27 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26, arg27 A27)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27 >;
+        tpClosure * closure = new tpClosure27< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26, A27);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26, class arg27, class arg28 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26, arg27 A27, arg28 A28)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28 >;
+        tpClosure * closure = new tpClosure28< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26, A27, A28);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26, class arg27, class arg28, class arg29 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26, arg27 A27, arg28 A28, arg29 A29)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29 >;
+        tpClosure * closure = new tpClosure29< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26, A27, A28, A29);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26, class arg27, class arg28, class arg29, class arg30 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26, arg27 A27, arg28 A28, arg29 A29, arg30 A30)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29, arg30 >;
+        tpClosure * closure = new tpClosure30< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29, arg30 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26, A27, A28, A29, A30);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26, class arg27, class arg28, class arg29, class arg30,
+    class arg31 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26, arg27 A27, arg28 A28, arg29 A29, arg30 A30,
+    arg31 A31)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29, arg30,
+                arg31 >;
+        tpClosure * closure = new tpClosure31< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29, arg30,
+                arg31 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26, A27, A28, A29, A30,
+                A31);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
+    }
+    
+    template<class newTP, class arg1, class arg2, class arg3, class arg4, class arg5,
+    class arg6, class arg7, class arg8, class arg9, class arg10,
+    class arg11, class arg12, class arg13, class arg14, class arg15,
+    class arg16, class arg17, class arg18, class arg19, class arg20,
+    class arg21, class arg22, class arg23, class arg24, class arg25,
+    class arg26, class arg27, class arg28, class arg29, class arg30,
+    class arg31, class arg32 >
+    bool
+    placeNode(uint64_t node, ThreadedProcedure * parentTP, arg1 A1, arg2 A2, arg3 A3, arg4 A4, arg5 A5,
+    arg6 A6, arg7 A7, arg8 A8, arg9 A9, arg10 A10,
+    arg11 A11, arg12 A12, arg13 A13, arg14 A14, arg15 A15,
+    arg16 A16, arg17 A17, arg18 A18, arg19 A19, arg20 A20,
+    arg21 A21, arg22 A22, arg23 A23, arg24 A24, arg25 A25,
+    arg26 A26, arg27 A27, arg28 A28, arg29 A29, arg30 A30,
+    arg31 A31, arg32 A32)
+    {
+        parentTP->incRef();
+        tpfactory funct = &TPFactory< newTP, arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29, arg30,
+                arg31, arg32 >;
+        tpClosure * closure = new tpClosure32< arg1, arg2, arg3, arg4, arg5,
+                arg6, arg7, arg8, arg9, arg10,
+                arg11, arg12, arg13, arg14, arg15,
+                arg16, arg17, arg18, arg19, arg20,
+                arg21, arg22, arg23, arg24, arg25,
+                arg26, arg27, arg28, arg29, arg30,
+                arg31, arg32 > (funct, parentTP, A1, A2, A3, A4, A5,
+                A6, A7, A8, A9, A10,
+                A11, A12, A13, A14, A15,
+                A16, A17, A18, A19, A20,
+                A21, A22, A23, A24, A25,
+                A26, A27, A28, A29, A30,
+                A31, A32);
+
+        if(TPScheduler::pushTPNode(node, closure))
+            return true;
+        /* Refused (no node group, node out of range, or not a DARTS
+         * thread): undo the closure and the parent reference. */
+        delete closure;
+        parentTP->decRef();
+        return false;
     }
 
 }

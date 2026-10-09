@@ -147,7 +147,7 @@ namespace darts
         bool
         takeTP(tpClosure * aTP)
         {
-            return ready_.push(aTP);
+            return pushReady(aTP);
         }
         
         virtual bool 
@@ -162,7 +162,7 @@ namespace darts
                 whichTP_++;
                 return ret;
             }
-            return ready_.push(TPtoPush);
+            return pushReady(TPtoPush);
         }
                 
     };    

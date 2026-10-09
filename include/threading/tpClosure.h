@@ -39,13 +39,18 @@ namespace darts
     {
         tpfactory factory;
         ThreadedProcedure * parent;
+        /* True once a TP scheduler accepted this closure as placed work
+         * (TPScheduler::pushTPPlaced): it must expand on that scheduler and
+         * is never returned by steal(). clone() copies it. */
+        bool sticky;
 
-        tpClosure(void)
+        tpClosure(void) :
+        factory(0), parent(0), sticky(false)
         {
         }
 
         tpClosure(tpfactory tpf, ThreadedProcedure * daddy) :
-        factory(tpf), parent(daddy)
+        factory(tpf), parent(daddy), sticky(false)
         {
         }
         

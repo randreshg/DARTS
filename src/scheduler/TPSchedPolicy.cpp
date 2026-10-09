@@ -33,11 +33,102 @@
 #include "MicroScheduler.h"
 #include <cstdlib>
 #include "tpClosure.h"
+#include "threadlocal.h"
 #ifdef TRACE
 #include "getClock.h"
 #endif
 
 namespace darts {
+
+    volatile uint64_t TPScheduler::directedRefused_ = 0;
+    volatile uint64_t TPScheduler::placedSteals_ = 0;
+    volatile uint64_t TPScheduler::nodeGroupRefused_ = 0;
+
+namespace {
+
+    /* The TP scheduler of SU `su` as seen from the calling thread, or NULL
+     * when the thread belongs to no DARTS scheduler, the index is out of
+     * range, or the target has no node group. */
+    TPScheduler * nodeGroupTarget(uint64_t su)
+    {
+        TPScheduler * mine = myThread.threadTPsched;
+        if(!mine || su >= mine->getNumTPSched())
+            return NULL;
+        TPScheduler * target = static_cast<TPScheduler *>(mine->getRuntimeTPSched(su));
+        if(!target || !target->hasNodeGroup())
+            return NULL;
+        return target;
+    }
+
+    /* Under NUMA_PAIRED the SUs of node k are 2k and 2k+1. */
+    TPScheduler * nodeTarget(uint64_t node)
+    {
+        if(node > (uint64_t)0x7fffffff)
+            return NULL;
+        TPScheduler * target = nodeGroupTarget(2 * node);
+        if(!target || target->getNode() != node)
+            return NULL;
+        return target;
+    }
+
+} // anonymous namespace
+
+    bool TPScheduler::pushCodeletToNode(uint64_t node, Codelet * cd)
+    {
+        TPScheduler * target = nodeTarget(node);
+        if(target && cd && target->pushNodeCodelet(cd))
+            return true;
+        Atomics::fetchAdd(nodeGroupRefused_, (uint64_t)1);
+        return false;
+    }
+
+    bool TPScheduler::pushCodeletShared(uint64_t su, Codelet * cd)
+    {
+        TPScheduler * target = nodeGroupTarget(su);
+        if(target && cd && target->pushShared(cd))
+            return true;
+        Atomics::fetchAdd(nodeGroupRefused_, (uint64_t)1);
+        return false;
+    }
+
+    bool TPScheduler::pushTPNode(uint64_t node, tpClosure * closure)
+    {
+        TPScheduler * target = nodeTarget(node);
+        if(target && closure && target->pushNodeTP(closure))
+            return true;
+        Atomics::fetchAdd(nodeGroupRefused_, (uint64_t)1);
+        return false;
+    }
+
+    bool TPScheduler::pushCodeletTo(uint64_t cluster, Codelet * cd)
+    {
+        TPScheduler * mine = myThread.threadTPsched;
+        if(mine && cd && cluster < mine->getNumTPSched())
+        {
+            TPScheduler * target = static_cast<TPScheduler *>(mine->getRuntimeTPSched(cluster));
+            if(target)
+            {
+                bool pushed = false;
+#ifdef TBB
+                pushed = target->pushCodelet(cd);
+#else
+                /* The non-TBB pool is a locked std::deque of pointers:
+                 * push_back has the strong guarantee, so an exception means
+                 * nothing was published and the push can be reported as
+                 * refused. */
+                try {
+                    pushed = target->pushCodelet(cd);
+                } catch (...) {
+                    pushed = false;
+                }
+#endif
+                if(pushed)
+                    return true;
+            }
+        }
+        Atomics::fetchAdd(directedRefused_, (uint64_t)1);
+        return false;
+    }
 
     void
     TPRoundRobin::policy() {
@@ -211,7 +302,7 @@ namespace darts {
         size_t numSub = getNumSub();
         if (!status || !numSub)
         {
-            return codelets_.push(CodeletToPush);
+            return pushOwnCodelet(CodeletToPush);
         }
         MScheduler * myCDS = static_cast<MScheduler*> (getSubScheduler((status - 1) % numSub));
         return myCDS->pushCodelet(CodeletToPush);

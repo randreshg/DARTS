@@ -48,6 +48,16 @@ namespace darts
 class Atomics
 {
 public:
+    /* Acquire load of a value that other threads update with the
+     * read-modify-write helpers below. */
+    template < class T > static T load ( volatile T & value )
+    {
+        #ifdef __GNUC__
+            return __atomic_load_n(&value, __ATOMIC_ACQUIRE);
+        #else
+            return value;
+        #endif
+    }
 //Section: Public ->
 
 	/*

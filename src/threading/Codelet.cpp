@@ -36,48 +36,138 @@
 #include "ThreadedProcedure.h"
 #include "threadlocal.h"
 #include "MSchedPolicy.h"
+#include "TPScheduler.h"
 #include <cassert>
 
 namespace darts
 {
+    const uint32_t Codelet::UNPLACED_CLUSTER;
+    const uint32_t Codelet::DIRECTED_ENQUEUE_FAILED;
+
+    /* A ready codelet holds one temporary reference on its TP until its
+     * enqueue is accepted. A refused directed enqueue rolls it back with the
+     * scheduler's delete-on-last-reference rule for child TPs; a root TP is
+     * owned by its creator and is only decremented. */
+    static void releaseDirectedReference(ThreadedProcedure * tp)
+    {
+        if(!tp)
+            return;
+        const bool deleteTP = tp->checkParent();
+        if(tp->decRef() && deleteTP)
+            delete tp;
+    }
     
     Codelet::Codelet(uint32_t dep, uint32_t res, ThreadedProcedure * theTp, uint32_t stat):
     status_(stat),
+    placed_(UNPLACED_CLUSTER),
     sync_(dep,res),
-    myTP_(theTp) 
+    myTP_(theTp),
+    placedNode_(0),
+    placeScope_(SCOPE_SU),
+    origStatus_(stat)
     {
     }
 
     Codelet::Codelet(void):
     status_(NIL),
+    placed_(UNPLACED_CLUSTER),
     sync_(0U,0U),
-    myTP_(0) { }
+    myTP_(0),
+    placedNode_(0),
+    placeScope_(SCOPE_SU),
+    origStatus_(NIL) { }
+
+    /* The node-group scopes. Returns whether the push was accepted and the
+     * target to report on refusal. */
+    static bool pushScoped(Codelet * cd, uint64_t * target)
+    {
+        if(cd->placeScope() == SCOPE_NODE)
+        {
+            *target = cd->placedNode();
+            return TPScheduler::pushCodeletToNode(cd->placedNode(), cd);
+        }
+        *target = cd->placedCluster();
+        return TPScheduler::pushCodeletShared(cd->placedCluster(), cd);
+    }
 
     void
     Codelet::initCodelet(uint32_t dep, uint32_t res, ThreadedProcedure * theTp, uint32_t stat)
     {
         sync_.initSyncSlot(dep,res);
         status_ = stat ;
+        origStatus_ = stat;
         myTP_ = theTp;
     }
 
     void
     Codelet::decDep(void)
     {
+        (void)tryDecDep();
+    }
+
+    bool
+    Codelet::tryDecDep(void)
+    {
         if(sync_.decCounter())
         {
-            if(myTP_)
-                myTP_->incRef();
+            ThreadedProcedure * tp = myTP_;
+            if(tp)
+                tp->incRef();
+            if(placeScope_ != SCOPE_SU)
+            {
+                uint64_t target = 0;
+                if(pushScoped(this, &target))
+                    return true;
+                notifyDirectedEnqueueFailure(target);
+                releaseDirectedReference(tp);
+                return false;
+            }
+            if(placed_ != UNPLACED_CLUSTER)
+            {
+                if(TPScheduler::pushCodeletTo(placed_, this))
+                    return true;
+                /* Running a placed codelet on the releasing scheduler would
+                 * break its placement: report the failure instead. */
+                notifyDirectedEnqueueFailure(placed_);
+                releaseDirectedReference(tp);
+                return false;
+            }
             if(myThread.threadMCsched)
             {
                 if(myThread.threadMCsched->getLocal())
                 {
                         if(myThread.threadMCsched->pushLocal(this))
-                                return;
+                                return true;
                 }
             }
             myThread.threadTPsched->pushCodelet(this);
+            return true;
         }
+        return false;
+    }
+
+    bool
+    Codelet::rearm(void)
+    {
+        if(!sync_.rearm())
+            return false;
+        /* Only the terminal failure marker is cleared; a status the owner
+         * set on purpose stays. */
+        (void)Atomics::boolcompareAndSwap(status_, DIRECTED_ENQUEUE_FAILED, origStatus_);
+        return true;
+    }
+
+    bool
+    Codelet::directedEnqueueFailed(void) const
+    {
+        return Atomics::load(status_) == DIRECTED_ENQUEUE_FAILED;
+    }
+
+    void
+    Codelet::notifyDirectedEnqueueFailure(uint64_t target)
+    {
+        (void)Atomics::swap(status_, DIRECTED_ENQUEUE_FAILED);
+        onDirectedEnqueueFailure(target);
     }
 
     void 
@@ -131,7 +221,35 @@ namespace darts
     {
         if(aCodelet->codeletReady())
         {
-            myTP_->incRef();
+            if(aCodelet->placeScope() != SCOPE_SU)
+            {
+                /* The reference is taken on the added codelet's own TP,
+                 * which is the one the scheduler releases after its fire. */
+                ThreadedProcedure * own = aCodelet->getTP();
+                if(own)
+                    own->incRef();
+                uint64_t target = 0;
+                if(pushScoped(aCodelet, &target))
+                    return;
+                aCodelet->notifyDirectedEnqueueFailure(target);
+                releaseDirectedReference(own);
+                return;
+            }
+            if(aCodelet->isPlaced())
+            {
+                ThreadedProcedure * tp = myTP_;
+                if(tp)
+                    tp->incRef();
+                if(TPScheduler::pushCodeletTo(aCodelet->placedCluster(), aCodelet))
+                    return;
+                aCodelet->notifyDirectedEnqueueFailure(aCodelet->placedCluster());
+                releaseDirectedReference(tp);
+                return;
+            }
+            /* A codelet without a TP (initCodelet(..., NULL, ...)) has no
+             * reference to take; the scheduler skips the release for it. */
+            if(myTP_)
+                myTP_->incRef();
             myThread.threadTPsched->pushCodelet(aCodelet);
         }
     }

@@ -85,9 +85,15 @@ namespace darts
 #endif
     public:
 
+        /* The Runtime publishes the scheduler table through
+         * setRuntimeTPScheds(); until then it is explicitly empty, so a
+         * directed push fails closed instead of reading garbage. */
         Scheduler(void) :
         id_(0),
         alive_(true),
+	runtimeTPSchedulers(0),
+	numTPSched(0),
+	numMCSched(0),
 	affin_(0)
         {
 
